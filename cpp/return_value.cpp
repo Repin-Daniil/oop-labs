@@ -3,36 +3,22 @@
 #include <execinfo.h>
 #include <cstdlib>
 
-struct SuperBase {
-  SuperBase() {
-    LOG_DEBUG() << "SuperBase default";
-  }
 
-  SuperBase(SuperBase *obj) {
-    LOG_DEBUG() << "SuperBase ptr ctor";
-  }
+struct Base {
+  int c = 2;
 
-  SuperBase(SuperBase &obj) {
-    LOG_DEBUG() << "SuperBase ref ctor";
-  }
-
-  ~SuperBase() {
-    LOG_DEBUG() << "SuperBase dtor";
-  }
-};
-
-
-struct Base : SuperBase {
   Base() {
     LOG_DEBUG() << "Base default";
   }
 
-  Base(Base *obj) {
-    LOG_DEBUG() << "Base ptr ctor";
-  }
+  Base(Base &&) = delete;
 
   Base(Base &obj) {
     LOG_DEBUG() << "Base ref ctor";
+  }
+
+  Base(Base *obj) {
+    LOG_DEBUG() << "Base ptr ctor";
   }
 
   ~Base() {
@@ -45,6 +31,8 @@ struct Derived : Base {
   Derived() {
     LOG_DEBUG() << "Derived default";
   }
+
+  Derived(Derived&&) = delete;
 
   Derived(Derived *obj) {
     LOG_DEBUG() << "Derived ptr ctor";
@@ -59,16 +47,43 @@ struct Derived : Base {
   }
 };
 
-void func1(Base obj) {
+
+
+Base func1() {
+  Base b;
+
+  return {b};
 }
 
-void func2(Base *obj) {
+Base *func2() {
+  Base b;
+
+  return &b;
 }
 
-void func3(Base &obj) {
+Base &func3() {
+  Base b;
+
+  return b;
 }
 
+Base func4() {
+  auto b = new Base;
 
+  return *b;
+}
+
+Base *func5() {
+  Base *b = new Base;
+
+  return b;
+}
+
+Base &func6() {
+  auto b = new Base;
+
+  return *b;
+}
 
 int main() {
   symcpp::utils::log::SetLogLevel(symcpp::utils::log::LogLevel::DEBUG);
@@ -76,7 +91,7 @@ int main() {
   symcpp::utils::log::SetLogTimeEnabled(false);
 
 
-  Derived d;
+  Base b = func2();
 
   return 0;
 }
