@@ -19,6 +19,10 @@ namespace container {
     }
   }
 
+//TODO нужны тесты на отсутствие реаоллокаций (передать тип NonCopyable)
+  //TODO нужны тесты на делитер
+  //TODO тесты на пуш в начало
+
   TEST_CASE("Member Types", "[stable_vector]") {
     REQUIRE((std::is_same_v<stable_vector<int>::ValueType, int>));
     REQUIRE((std::is_same_v<stable_vector<int>::Pointer, decltype(std::declval<stable_vector<int>>().Data())>));
