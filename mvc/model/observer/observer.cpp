@@ -1,0 +1,13 @@
+#include "observer.h"
+
+#include <memory>
+
+void Subject::AddObserver(std::shared_ptr<IListener> listener) {
+  observers_.push_back(listener);
+}
+
+void Subject::NotifyAll() noexcept {
+  for (auto& observer : observers_) {
+    observer->OnChanged();
+  }
+}
