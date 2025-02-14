@@ -48,10 +48,11 @@ int main() {
   file.close();
 
   DeepThought model{a, b, c};
-  model.AddObserver(std::make_shared<Storage>(model));
+  std::shared_ptr<IListener> storage = std::make_shared<Storage>(model);
+  model.AddObserver(storage.get());
+  model.SetPolicy(DeepThought::Number::B, DeepThought::Policy::FORBIDDING);
 
   while (true) {
-
     char letter;
     int value;
     std::cin >> letter >> value;

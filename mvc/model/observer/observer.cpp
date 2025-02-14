@@ -2,7 +2,7 @@
 
 #include <memory>
 
-void Subject::AddObserver(std::shared_ptr<IListener> listener) {
+void Subject::AddObserver(IListener* listener) {
   observers_.push_back(listener);
 }
 

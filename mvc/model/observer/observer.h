@@ -4,22 +4,21 @@
 #include <vector>
 
 class IListener {
-public:
+ public:
   virtual void OnChanged() noexcept = 0;
 
   virtual ~IListener() = default;
 };
 
 class Subject {
-public:
-  void AddObserver(std::shared_ptr<IListener> listener);
+ public:
+  void AddObserver(IListener* listener);
 
-protected:
+ protected:
   void NotifyAll() noexcept;
 
   ~Subject() = default;  // https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rc-dtor-virtual
 
-private:
-  std::vector<std::shared_ptr<IListener> > observers_;
-  //FIXME Идея с shared_ptr-ами не очень, получается, что модель владеет инфраструкторой? Наверное, это Application должно все разруливать
+ private:
+  std::vector<IListener*> observers_;
 };

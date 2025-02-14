@@ -31,6 +31,7 @@ void DeepThought::UpdateNumber(Number number, int value) noexcept {
 }
 
 void DeepThought::UpdateA(int value, Policy policy) {
+  policy = (policy != Policy::NONE ? policy : a_policy_);
   int normalized_value = Normalize(value, left_border_, right_border_);
 
   if (normalized_value != value) {
@@ -49,6 +50,8 @@ void DeepThought::UpdateA(int value, Policy policy) {
 }
 
 void DeepThought::UpdateB(int value, Policy policy) {
+  policy = (policy != Policy::NONE ? policy : b_policy_);
+
   if (policy == Policy::PERMISSIVE) {
     b_ = value;
 
@@ -65,6 +68,7 @@ void DeepThought::UpdateB(int value, Policy policy) {
 }
 
 void DeepThought::UpdateC(int value, Policy policy) {
+  policy = (policy != Policy::NONE ? policy : c_policy_);
   int normalized_value = Normalize(value, left_border_, right_border_);
 
   if (normalized_value != value) {
@@ -100,8 +104,52 @@ int DeepThought::GetC() const noexcept {
   return c_;
 }
 
+int DeepThought::GetLeftBorder() const noexcept {
+  return left_border_;
+}
+int DeepThought::GetRightBorder() const noexcept {
+  return right_border_;
+}
+
+void DeepThought::SetPolicy(Number number, Policy policy) noexcept {
+  std::unique_lock policy_lock(numbers_mutex_);
+
+  if (policy == Policy::PERMISSIVE) {
+    return;
+  }
+
+  switch (number) {
+    case Number::A:
+      a_policy_ = policy;
+      break;
+
+    case Number::B:
+      b_policy_ = policy;
+      break;
+
+    case Number::C:
+      c_policy_ = policy;
+      break;
+  }
+}
+
+DeepThought::Policy DeepThought::GetPolicy(Number number) const noexcept {
+  switch (number) {
+    case Number::A:
+      return a_policy_;
+
+    case Number::B:
+      return b_policy_;
+
+    case Number::C:
+      return c_policy_;
+  }
+
+  throw std::invalid_argument("Number does not exist");
+}
+
 int DeepThought::GetAnswerOnAnyQuestion() const noexcept {
   return ultimate_answer_;
 }
 
-} // model
+}  // namespace model
