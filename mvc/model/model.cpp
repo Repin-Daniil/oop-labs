@@ -1,4 +1,4 @@
-#include <model.h>
+#include <model.hpp>
 
 #include "../infrastructure/log/log.hpp"
 
@@ -50,7 +50,7 @@ bool DeepThought::UpdateNumber(Number number, int value) noexcept {
   }
 
   LOG_TRACE() << "UpdateNumber mutex unique unlock (try)";
-  update_lock.unlock(); //FIXME Возможно нужно удалит ь
+  update_lock.unlock(); //FIXME Возможно нужно удалить
 
   if (is_model_changed) {
     LOG_TRACE() << "UpdateNumber mutex shared lock (try)";

@@ -4,8 +4,9 @@
 #include <thread>
 #include "catch.hpp"
 
-#include "../app/runner/runner.h"
-#include "../infrastructure/log/log.hpp"
+#include <app/runner/runner.h>
+#include <app/runner/runner.h> // check include guards
+#include <infrastructure/log/log.hpp>
 
 #include <infrastructure/log/log.hpp>
 

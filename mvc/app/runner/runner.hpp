@@ -1,6 +1,5 @@
 #pragma once
-#include "../../model/model.h"
-#include <atomic>
+#include <model/model.hpp>
 #include <thread>
 
 namespace mvc::app {

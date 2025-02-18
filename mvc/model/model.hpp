@@ -1,6 +1,6 @@
 #pragma once
 
-#include <observer/observer.h>
+#include <observer/observer.hpp>
 #include <shared_mutex>
 
 namespace mvc::model {

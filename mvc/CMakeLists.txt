@@ -7,15 +7,15 @@ add_library(NUMBERS_MODEL STATIC model/model.cpp model/observer/observer.cpp)
 target_include_directories(NUMBERS_MODEL PUBLIC model)
 
 
-add_library(NUMBERS_APP STATIC infrastructure/storage/storage.cpp app/application.cpp app/runner/runner.cpp infrastructure/log/log.cpp)
-target_link_libraries(NUMBERS_APP PUBLIC NUMBERS_MODEL)
+add_library(NUMBERS_APP STATIC infrastructure/storage/storage.cpp app/application.cpp app/runner/runner.cpp infrastructure/log/log.cpp app/runner/runners.cpp)
+target_link_libraries(NUMBERS_APP PUBLIC NUMBERS_MODEL Qt::Core Qt::Gui Qt::Widgets  )
 target_include_directories(NUMBERS_APP PUBLIC .)
 
 
 find_package(Qt6 COMPONENTS Core Gui Widgets REQUIRED)
 
-add_executable(numbers main.cpp)
+add_executable(numbers main.cpp gui/form.cpp)
 
-target_link_libraries(numbers Qt::Core Qt::Gui Qt::Widgets  NUMBERS_MODEL NUMBERS_APP)
+target_link_libraries(numbers NUMBERS_APP)
 
-include_directories(tests)
+add_subdirectory(tests)

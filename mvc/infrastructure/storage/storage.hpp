@@ -1,7 +1,7 @@
 #pragma once
 
-#include <model.h>
-#include <observer/observer.h>
+#include <model.hpp>
+#include <observer/observer.hpp>
 #include <fstream>
 #include <iostream>
 

@@ -1,6 +1,6 @@
-#include "runner.h"
+#include "runner.hpp"
 
-#include "../../infrastructure/log/log.hpp"
+#include <infrastructure/log/log.hpp>
 
 namespace mvc::app {
 
