@@ -1,23 +1,39 @@
 #include <model.h>
 
-namespace model {
+#include "../infrastructure/log/log.hpp"
 
-DeepThought::DeepThought(int a, int b, int c) : a_(a), b_(b), c_(c) {
+namespace mvc::model {
+
+DeepThought::DeepThought(int a, int b, int c) {
+  if (a >= 0 && a <= b && b <= c && c <= 100) {
+    a_ = a;
+    b_ = b;
+    c_ = c;
+  } else {
+    throw std::invalid_argument("Invalid arguments");
+  }
+}
+
+DeepThought::DeepThought(const std::tuple<int, int, int>& numbers)
+    : DeepThought(std::get<0>(numbers), std::get<1>(numbers), std::get<2>(numbers)) {
 }
 
 int DeepThought::Normalize(int value, int left, int right) {
   return std::min(right, std::max(value, left));
 }
 
-void DeepThought::IncrementNumber(Number number, int value) noexcept {
-  UpdateNumber(number, GetNumber(number) + value);
+bool DeepThought::IncrementNumber(Number number, int value) noexcept {
+  auto new_value = GetNumber(number) + value;
+  return UpdateNumber(number, new_value);
 }
 
-void DeepThought::DecrementNumber(Number number, int value) noexcept {
-  UpdateNumber(number, GetNumber(number) - value);
+bool DeepThought::DecrementNumber(Number number, int value) noexcept {
+  auto new_value = GetNumber(number) - value;
+  return UpdateNumber(number, new_value);
 }
 
-void DeepThought::UpdateNumber(Number number, int value) noexcept {
+bool DeepThought::UpdateNumber(Number number, int value) noexcept {
+  LOG_TRACE() << "UpdateNumber mutex unique lock (try)";
   std::unique_lock update_lock(numbers_mutex_);
   bool is_model_changed = false;
 
@@ -33,18 +49,22 @@ void DeepThought::UpdateNumber(Number number, int value) noexcept {
       break;
   }
 
-  update_lock.unlock();
+  LOG_TRACE() << "UpdateNumber mutex unique unlock (try)";
+  update_lock.unlock(); //FIXME Возможно нужно удалит ь
 
   if (is_model_changed) {
-    std::shared_lock notify_lock(numbers_mutex_);
+    LOG_TRACE() << "UpdateNumber mutex shared lock (try)";
+
     NotifyAll();
   }
+
+  return is_model_changed;
 }
 
 bool DeepThought::UpdateA(int value, Policy policy) {
   policy = (policy != Policy::NONE ? policy : a_policy_);
   int normalized_value = Normalize(value, left_border_, right_border_);
-  bool old_value = a_;
+  int old_value = a_;
 
   if (normalized_value != value) {
     if (policy == Policy::RESTRICTIVE) {
@@ -65,7 +85,7 @@ bool DeepThought::UpdateA(int value, Policy policy) {
 
 bool DeepThought::UpdateB(int value, Policy policy) {
   policy = (policy != Policy::NONE ? policy : b_policy_);
-  bool old_value = b_;
+  int old_value = b_;
 
   if (policy == Policy::PERMISSIVE) {
     b_ = value;
@@ -87,7 +107,7 @@ bool DeepThought::UpdateB(int value, Policy policy) {
 bool DeepThought::UpdateC(int value, Policy policy) {
   policy = (policy != Policy::NONE ? policy : c_policy_);
   int normalized_value = Normalize(value, left_border_, right_border_);
-  bool old_value = c_;
+  int old_value = c_;
 
   if (normalized_value != value) {
     if (policy == Policy::RESTRICTIVE) {
@@ -107,8 +127,6 @@ bool DeepThought::UpdateC(int value, Policy policy) {
 }
 
 int DeepThought::GetNumber(Number number) const {
-  std::shared_lock read_lock(numbers_mutex_);
-
   switch (number) {
     case Number::A:
       return GetA();
@@ -124,18 +142,21 @@ int DeepThought::GetNumber(Number number) const {
 }
 
 int DeepThought::GetA() const noexcept {
+  LOG_TRACE() << "GetA mutex shared lock (try)";
   std::shared_lock read_lock(numbers_mutex_);
 
   return a_;
 }
 
 int DeepThought::GetB() const noexcept {
+  LOG_TRACE() << "GetB mutex shared lock (try)";
   std::shared_lock read_lock(numbers_mutex_);
 
   return b_;
 }
 
 int DeepThought::GetC() const noexcept {
+  LOG_TRACE() << "GetC mutex shared lock (try)";
   std::shared_lock read_lock(numbers_mutex_);
 
   return c_;
@@ -150,6 +171,7 @@ int DeepThought::GetRightBorder() const noexcept {
 }
 
 void DeepThought::SetPolicy(Number number, Policy policy) noexcept {
+  LOG_TRACE() << "SetPolicy mutex unique lock (try)";
   std::unique_lock policy_lock(numbers_mutex_);
 
   if (policy == Policy::PERMISSIVE) {
@@ -172,6 +194,7 @@ void DeepThought::SetPolicy(Number number, Policy policy) noexcept {
 }
 
 DeepThought::Policy DeepThought::GetPolicy(Number number) const noexcept {
+  LOG_TRACE() << "GetPolicy mutex shared lock (try)";
   std::shared_lock read_lock(numbers_mutex_);
 
   switch (number) {
@@ -192,4 +215,4 @@ int DeepThought::GetAnswerOnAnyQuestion() const noexcept {
   return ultimate_answer_;
 }
 
-}  // namespace model
+}  // namespace mvc::model

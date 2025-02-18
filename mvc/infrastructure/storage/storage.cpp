@@ -1,25 +1,20 @@
 #include "storage.h"
 
-namespace infrastructure {
+namespace mvc::infrastructure {
 
-Storage::Storage(model::DeepThought& model, std::string_view filename)
-    : model_(model), file_(filename, std::ios::trunc) {
-  if (!file_) {
-    throw std::runtime_error("Failed to open file.");
-  }
+Storage::Storage(model::DeepThought& model, std::string_view filename) : model_(model), filename_(filename) {
 }
 
 void Storage::OnChanged() noexcept {
-  std::cout << model_.GetA() << " " << model_.GetB() << " " << model_.GetC() << std::endl;
-  file_.clear();   // Сброс флагов (на всякий случай)
-  file_.seekp(0);  // Перемещение указателя в начало файла
+  std::lock_guard lock(mutex_);
+  std::ofstream file(filename_, std::ios::trunc);
 
-  file_ << model_.GetA() << ' ' << model_.GetB() << ' ' << model_.GetC();
-  file_.flush();  // Сбрасываем буфер (важно!)
-}
+  if (!file) {
+    return;
+  }
 
-Storage::~Storage() {
-  file_.close();
+  file << model_.GetA() << ' ' << model_.GetB() << ' ' << model_.GetC();
+  file.flush();
 }
 
 std::tuple<int, int, int> LoadNumbers(std::string_view filename) {

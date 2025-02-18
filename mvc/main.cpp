@@ -1,44 +1,35 @@
-// #define CATCH_CONFIG_MAIN
-// #include "catch.hpp"
+#include <QApplication>
+#include <QPushButton>
 
-#include <model.h>
-#include <model.h>  // check include guards
+#include <model/model.h>
+#include <app/application.h>
+#include <infrastructure/log/log.hpp>
+#include <infrastructure/storage/storage.h>
 
-#include <fstream>
-#include <iostream>
-
-#include "infrastructure/storage/storage.h"
-
-using namespace model;
+int main(int argc, char* argv[])
+{
+  QApplication a(argc, argv);
+  QPushButton button("Hello world!", nullptr);
+  button.resize(200, 100);
+  button.show();
+  return QApplication::exec();
+}
 
 
 int main() {
-  std::string filename = "output.txt";
-  auto [a, b, c] = infrastructure::LoadNumbers(filename);
+  mvc::infrastructure::log::SetLogLevel(mvc::infrastructure::log::LogLevel::INFO);
+  mvc::app::Application app{"output.txt"};
 
-  DeepThought model{a, b, c};
-  std::shared_ptr<IListener> storage = std::make_shared<infrastructure::Storage>(model, filename);
 
-  model.AddObserver(storage.get());
-  model.SetPolicy(DeepThought::Number::B, DeepThought::Policy::FORBIDDING);
+  // auto& model = app.GetModel();
+  // app.StartRunner(DeepThought::Number::B);
+  // std::this_thread::sleep_for(std::chrono::milliseconds(1330));
+  //
+  // // app.StartRunner(DeepThought::Number::A);
+  // app.StartRunner(DeepThought::Number::C);
 
-  while (true) {
-    char letter;
-    int value;
-    std::cin >> letter >> value;
 
-    switch (letter) {
-      case 'A':
-        model.UpdateNumber(DeepThought::Number::A, value);
-        break;
-      case 'B':
-        model.UpdateNumber(DeepThought::Number::B, value);
-        break;
-      case 'C':
-        model.UpdateNumber(DeepThought::Number::C, value);
-        break;
-    }
-  }
+
 
   return EXIT_SUCCESS;
 }

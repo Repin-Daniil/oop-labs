@@ -3,7 +3,7 @@
 #include <observer/observer.h>
 #include <shared_mutex>
 
-namespace model {
+namespace mvc::model {
 
 /**
  *@brief Модель для работы с тремя целыми числами A, B, C
@@ -17,10 +17,11 @@ class DeepThought : public Subject {
 
   DeepThought() = default;
   DeepThought(int a, int b, int c);
+  explicit DeepThought(const std::tuple<int, int, int>& numbers);
 
-  void UpdateNumber(Number number, int value) noexcept;
-  void IncrementNumber(Number number, int value) noexcept;
-  void DecrementNumber(Number number, int value) noexcept;
+  bool UpdateNumber(Number number, int value) noexcept;
+  bool IncrementNumber(Number number, int value) noexcept;
+  bool DecrementNumber(Number number, int value) noexcept;
 
   [[nodiscard]] int GetNumber(Number number) const;
   [[nodiscard]] int GetAnswerOnAnyQuestion() const noexcept;
