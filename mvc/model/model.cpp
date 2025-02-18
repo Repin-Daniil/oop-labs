@@ -9,36 +9,48 @@ int DeepThought::Normalize(int value, int left, int right) {
   return std::min(right, std::max(value, left));
 }
 
+void DeepThought::IncrementNumber(Number number, int value) noexcept {
+  UpdateNumber(number, GetNumber(number) + value);
+}
+
+void DeepThought::DecrementNumber(Number number, int value) noexcept {
+  UpdateNumber(number, GetNumber(number) - value);
+}
+
 void DeepThought::UpdateNumber(Number number, int value) noexcept {
   std::unique_lock update_lock(numbers_mutex_);
+  bool is_model_changed = false;
 
   switch (number) {
     case Number::A:
-      UpdateA(value);
+      is_model_changed = UpdateA(value);
       break;
     case Number::B:
-      UpdateB(value);
+      is_model_changed = UpdateB(value);
       break;
     case Number::C:
-      UpdateC(value);
+      is_model_changed = UpdateC(value);
       break;
   }
 
   update_lock.unlock();
-  std::shared_lock notify_lock(numbers_mutex_);
 
-  NotifyAll();
+  if (is_model_changed) {
+    std::shared_lock notify_lock(numbers_mutex_);
+    NotifyAll();
+  }
 }
 
-void DeepThought::UpdateA(int value, Policy policy) {
+bool DeepThought::UpdateA(int value, Policy policy) {
   policy = (policy != Policy::NONE ? policy : a_policy_);
   int normalized_value = Normalize(value, left_border_, right_border_);
+  bool old_value = a_;
 
   if (normalized_value != value) {
     if (policy == Policy::RESTRICTIVE) {
       value = normalized_value;
     } else if (policy == Policy::FORBIDDING || policy == Policy::PERMISSIVE) {
-      return;
+      return false;
     }
   }
 
@@ -47,10 +59,13 @@ void DeepThought::UpdateA(int value, Policy policy) {
   if (b_ < a_) {
     UpdateB(value, Policy::PERMISSIVE);
   }
+
+  return a_ != old_value;
 }
 
-void DeepThought::UpdateB(int value, Policy policy) {
+bool DeepThought::UpdateB(int value, Policy policy) {
   policy = (policy != Policy::NONE ? policy : b_policy_);
+  bool old_value = b_;
 
   if (policy == Policy::PERMISSIVE) {
     b_ = value;
@@ -65,17 +80,20 @@ void DeepThought::UpdateB(int value, Policy policy) {
   } else if (policy == Policy::FORBIDDING) {
     b_ = ((a_ <= value && value <= c_) ? value : b_);
   }
+
+  return b_ != old_value;
 }
 
-void DeepThought::UpdateC(int value, Policy policy) {
+bool DeepThought::UpdateC(int value, Policy policy) {
   policy = (policy != Policy::NONE ? policy : c_policy_);
   int normalized_value = Normalize(value, left_border_, right_border_);
+  bool old_value = c_;
 
   if (normalized_value != value) {
     if (policy == Policy::RESTRICTIVE) {
       value = normalized_value;
     } else if (policy == Policy::FORBIDDING || policy == Policy::PERMISSIVE) {
-      return;
+      return false;
     }
   }
 
@@ -84,6 +102,25 @@ void DeepThought::UpdateC(int value, Policy policy) {
   if (b_ > c_) {
     UpdateB(value, Policy::PERMISSIVE);
   }
+
+  return c_ != old_value;
+}
+
+int DeepThought::GetNumber(Number number) const {
+  std::shared_lock read_lock(numbers_mutex_);
+
+  switch (number) {
+    case Number::A:
+      return GetA();
+
+    case Number::B:
+      return GetB();
+
+    case Number::C:
+      return GetC();
+  }
+
+  throw std::invalid_argument("Number does not exist");
 }
 
 int DeepThought::GetA() const noexcept {
@@ -107,6 +144,7 @@ int DeepThought::GetC() const noexcept {
 int DeepThought::GetLeftBorder() const noexcept {
   return left_border_;
 }
+
 int DeepThought::GetRightBorder() const noexcept {
   return right_border_;
 }
@@ -134,6 +172,8 @@ void DeepThought::SetPolicy(Number number, Policy policy) noexcept {
 }
 
 DeepThought::Policy DeepThought::GetPolicy(Number number) const noexcept {
+  std::shared_lock read_lock(numbers_mutex_);
+
   switch (number) {
     case Number::A:
       return a_policy_;

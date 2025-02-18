@@ -8,6 +8,7 @@ namespace model {
 /**
  *@brief Модель для работы с тремя целыми числами A, B, C
  *@invariant 0 <= A <= B <= C <= 100
+ *@author Repin-Daniil <daniil.r4@yandex.ru>
  */
 class DeepThought : public Subject {
  public:
@@ -18,7 +19,10 @@ class DeepThought : public Subject {
   DeepThought(int a, int b, int c);
 
   void UpdateNumber(Number number, int value) noexcept;
+  void IncrementNumber(Number number, int value) noexcept;
+  void DecrementNumber(Number number, int value) noexcept;
 
+  [[nodiscard]] int GetNumber(Number number) const;
   [[nodiscard]] int GetAnswerOnAnyQuestion() const noexcept;
   [[nodiscard]] int GetA() const noexcept;
   [[nodiscard]] int GetB() const noexcept;
@@ -45,9 +49,9 @@ class DeepThought : public Subject {
 
   mutable std::shared_mutex numbers_mutex_{};
 
-  void UpdateA(int value, Policy policy = Policy::NONE);
-  void UpdateB(int value, Policy policy = Policy::NONE);
-  void UpdateC(int value, Policy policy = Policy::NONE);
+  bool UpdateA(int value, Policy policy = Policy::NONE);
+  bool UpdateB(int value, Policy policy = Policy::NONE);
+  bool UpdateC(int value, Policy policy = Policy::NONE);
 
   int Normalize(int value, int left, int right);
   };
