@@ -1,4 +1,4 @@
-name: Lab 3 MVC CI
+name: Lab 5 CPP CI
 
 on:
   push:
