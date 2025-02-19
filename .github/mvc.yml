@@ -1,4 +1,4 @@
-name: CI
+name: Lab 3 MVC CI
 
 on:
   push:
