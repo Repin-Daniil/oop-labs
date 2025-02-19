@@ -1,5 +1,9 @@
-#include <array>
 #include <symcpp/symcpp.h>
+
+#include <unordered_map>
+
+#include <array>
+#include <string>
 #include <symcpp/utils/log.hpp>
 
 using namespace symcpp;
@@ -17,9 +21,9 @@ int main() {
 
   auto root = in[0].Release();
 
-  LOG_INFO() << "Multiplication is operand = "  << root->IsA(constants::Expressions::OPERAND);
-  LOG_INFO() <<  "Multiplication is unary ="<< root->IsA(constants::Expressions::UNARY_OPERATION);
-  LOG_INFO() << "Multiplication is binary = "<<root->IsA(constants::Expressions::BINARY_OPERATION);
+  LOG_INFO() << "Multiplication is operand = " << root->IsA(constants::Expressions::OPERAND);
+  LOG_INFO() << "Multiplication is unary =" << root->IsA(constants::Expressions::UNARY_OPERATION);
+  LOG_INFO() << "Multiplication is binary = " << root->IsA(constants::Expressions::BINARY_OPERATION);
   LOG_INFO() << "Multiplication is multiplication = " << root->IsA(constants::Expressions::MULTIPLICATION);
 
   auto root_ptr = dynamic_cast<math::BinaryOperation*>(root.get());

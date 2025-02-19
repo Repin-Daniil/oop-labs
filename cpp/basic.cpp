@@ -1,5 +1,7 @@
-#include <array>
 #include <symcpp/symcpp.h>
+#include <array>
+#include <string>
+#include <unordered_map>
 #include <symcpp/utils/log.hpp>
 
 using namespace symcpp;

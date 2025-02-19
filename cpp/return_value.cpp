@@ -1,8 +1,7 @@
-#include <symcpp/utils/log.hpp>
-
 #include <execinfo.h>
 #include <cstdlib>
 
+#include <symcpp/utils/log.hpp>
 
 struct Base {
   int c = 2;
@@ -11,13 +10,13 @@ struct Base {
     LOG_DEBUG() << "Base default";
   }
 
-  Base(Base &&) = delete;
+  Base(Base&&) = delete;
 
-  Base(Base &obj) {
+  Base(Base& obj) {
     LOG_DEBUG() << "Base ref ctor";
   }
 
-  Base(Base *obj) {
+  Base(Base* obj) {  // NOLINT
     LOG_DEBUG() << "Base ptr ctor";
   }
 
@@ -26,7 +25,6 @@ struct Base {
   }
 };
 
-
 struct Derived : Base {
   Derived() {
     LOG_DEBUG() << "Derived default";
@@ -34,11 +32,11 @@ struct Derived : Base {
 
   Derived(Derived&&) = delete;
 
-  Derived(Derived *obj) {
+  explicit Derived(Derived* obj) {
     LOG_DEBUG() << "Derived ptr ctor";
   }
 
-  Derived(Derived &obj) {
+  explicit Derived(Derived& obj) {
     LOG_DEBUG() << "Derived ref ctor";
   }
 
@@ -47,21 +45,19 @@ struct Derived : Base {
   }
 };
 
-
-
 Base func1() {
   Base b;
 
   return {b};
 }
 
-Base *func2() {
+Base* func2() {
   Base b;
 
   return &b;
 }
 
-Base &func3() {
+Base& func3() {
   Base b;
 
   return b;
@@ -73,13 +69,13 @@ Base func4() {
   return *b;
 }
 
-Base *func5() {
-  Base *b = new Base;
+Base* func5() {
+  Base* b = new Base;
 
   return b;
 }
 
-Base &func6() {
+Base& func6() {
   auto b = new Base;
 
   return *b;
@@ -89,7 +85,6 @@ int main() {
   symcpp::utils::log::SetLogLevel(symcpp::utils::log::LogLevel::DEBUG);
   symcpp::utils::log::SetLogLocationEnabled(false);
   symcpp::utils::log::SetLogTimeEnabled(false);
-
 
   Base b = func2();
 

@@ -1,6 +1,5 @@
 #include <symcpp/utils/log.hpp>
 
-
 struct Base {
   virtual void MagicMethod() {
     LOG_INFO() << "Base with magic";
@@ -13,7 +12,6 @@ struct Base {
 
   virtual ~Base() = default;
 };
-
 
 struct Derived : public Base {
   void MagicMethod() override {
@@ -29,15 +27,13 @@ int main() {
   symcpp::utils::log::SetLogTimeEnabled(false);
   symcpp::utils::log::SetLogLocationEnabled(false);
 
-   // std::shared_ptr<Derived> derived = std::make_shared<Derived>();
+  // std::shared_ptr<Derived> derived = std::make_shared<Derived>();
   // std::shared_ptr<Base> base = std::make_shared<Derived>();
 
-   // base->MagicMethod();
+  // base->MagicMethod();
   // base->NonMagicMethod();
   // derived->MagicMethod();
   // derived->NonMagicMethod();
-
-
 
   return EXIT_SUCCESS;
 }
