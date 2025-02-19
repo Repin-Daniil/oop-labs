@@ -1,8 +1,11 @@
 #pragma once
-#include <model/model.hpp>
+
+#include <memory>
 #include <thread>
 
-namespace mvc::app {
+#include <model.hpp>
+
+namespace mvc::utils::run {
 
 class Runner {
  public:
@@ -16,6 +19,7 @@ class Runner {
 
   void Start();
   void Stop();
+  [[nodiscard]] bool IsRunning() const;
 
   ~Runner();
 
@@ -27,4 +31,4 @@ class Runner {
   std::thread thread_{};
 };
 
-}  // namespace mvc::app
+}  // namespace mvc::utils::run

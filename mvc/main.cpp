@@ -1,8 +1,8 @@
 #include <app/application.hpp>
-#include <infrastructure/log/log.hpp>
+#include <log.hpp>
 
 int main(int argc, char* argv[]) {
-  SetLogLevel(mvc::infrastructure::log::LogLevel::INFO);
+  SetLogLevel(mvc::utils::log::LogLevel::INFO);
 
   mvc::app::Application app{"output.txt", argc, argv};
   app.Run();

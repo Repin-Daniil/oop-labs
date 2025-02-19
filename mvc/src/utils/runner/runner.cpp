@@ -1,10 +1,13 @@
 #include "runner.hpp"
 
-#include <infrastructure/log/log.hpp>
+#include <memory>
+#include <utility>
 
-namespace mvc::app {
+#include <utils/log/log.hpp>
 
-static void Run(model::DeepThought& model, model::DeepThought::Number number, std::atomic<bool>& running) {
+namespace mvc::utils::run {
+
+static void Run(model::DeepThought& model, model::DeepThought::Number number, const std::atomic<bool>& running) {
   bool grow = true;
 
   while (running) {
@@ -32,7 +35,7 @@ Runner::Runner(Runner&& runner) noexcept
 }
 
 void Runner::Start() {
-  if(!running_) {
+  if (!running_) {
     running_ = std::make_unique<std::atomic<bool>>(false);
   }
 
@@ -48,7 +51,7 @@ void Runner::Start() {
 }
 
 void Runner::Stop() {
-  if(!running_) {
+  if (!running_) {
     return;
   }
   LOG_DEBUG() << "Stop runner for number ";
@@ -67,9 +70,13 @@ void Runner::Stop() {
   }
 }
 
+bool Runner::IsRunning() const {
+  return running_ && *running_ && thread_.joinable();
+}
+
 Runner::~Runner() {
   LOG_TRACE() << "Runner::~Runner()";
   Stop();
 }
 
-}  // namespace mvc::app
+}  // namespace mvc::utils::run

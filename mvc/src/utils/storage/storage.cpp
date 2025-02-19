@@ -1,6 +1,10 @@
 #include "storage.hpp"
 
-namespace mvc::infrastructure {
+#include <tuple>
+
+#include <log.hpp>
+
+namespace mvc::utils::serialization {
 
 Storage::Storage(model::DeepThought& model, std::string_view filename) : model_(model), filename_(filename) {
 }
@@ -20,15 +24,15 @@ void Storage::OnChanged() noexcept {
 std::tuple<int, int, int> LoadNumbers(std::string_view filename) {
   std::ifstream file(filename);
   if (!file) {
-    std::cout << "Файл не найден" << std::endl;
+    LOG_ERROR() << "Файл не найден";
     return {};
   }
 
   int a, b, c;
-  file >> a >> b >> c;  // Читаем три числа
+  file >> a >> b >> c;
 
   file.close();
   return {a, b, c};
 }
 
-}
+}  // namespace mvc::utils::serialization

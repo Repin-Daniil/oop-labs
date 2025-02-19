@@ -1,11 +1,14 @@
 #pragma once
 
-#include <model.hpp>
-#include <observer/observer.hpp>
 #include <fstream>
 #include <iostream>
+#include <string>
+#include <tuple>
 
-namespace mvc::infrastructure {
+#include <model.hpp>
+#include <observer/observer.hpp>
+
+namespace mvc::utils::serialization {
 
 class Storage : public IListener {
  public:
@@ -20,5 +23,4 @@ class Storage : public IListener {
 
 std::tuple<int, int, int> LoadNumbers(std::string_view filename);
 
-
-}  // namespace infrastructure
+}  // namespace mvc::utils::serialization
