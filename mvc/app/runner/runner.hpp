@@ -16,6 +16,7 @@ class Runner {
 
   void Start();
   void Stop();
+  [[nodiscard]] bool IsRunning() const;
 
   ~Runner();
 

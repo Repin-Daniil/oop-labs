@@ -7,7 +7,9 @@ add_library(NUMBERS_MODEL STATIC model/model.cpp model/observer/observer.cpp)
 target_include_directories(NUMBERS_MODEL PUBLIC model)
 
 
-add_library(NUMBERS_APP STATIC infrastructure/storage/storage.cpp app/application.cpp app/runner/runner.cpp infrastructure/log/log.cpp app/runner/runners.cpp)
+add_library(NUMBERS_APP STATIC infrastructure/storage/storage.cpp app/application.cpp app/runner/runner.cpp infrastructure/log/log.cpp app/runner/runners.cpp
+        gui/ui.cpp
+        gui/ui.hpp)
 target_link_libraries(NUMBERS_APP PUBLIC NUMBERS_MODEL Qt::Core Qt::Gui Qt::Widgets  )
 target_include_directories(NUMBERS_APP PUBLIC .)
 

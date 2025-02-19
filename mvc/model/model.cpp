@@ -50,11 +50,9 @@ bool DeepThought::UpdateNumber(Number number, int value) noexcept {
   }
 
   LOG_TRACE() << "UpdateNumber mutex unique unlock (try)";
-  update_lock.unlock(); //FIXME Возможно нужно удалить
+  update_lock.unlock();
 
   if (is_model_changed) {
-    LOG_TRACE() << "UpdateNumber mutex shared lock (try)";
-
     NotifyAll();
   }
 
@@ -124,6 +122,13 @@ bool DeepThought::UpdateC(int value, Policy policy) {
   }
 
   return c_ != old_value;
+}
+
+std::tuple<int, int, int> DeepThought::GetNumbers() const noexcept {
+  LOG_TRACE() << "GetNumbers shared lock (try)";
+  std::shared_lock lock(numbers_mutex_);
+
+  return {a_, b_, c_};
 }
 
 int DeepThought::GetNumber(Number number) const {

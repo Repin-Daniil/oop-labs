@@ -23,6 +23,7 @@ class DeepThought : public Subject {
   bool IncrementNumber(Number number, int value) noexcept;
   bool DecrementNumber(Number number, int value) noexcept;
 
+  [[nodiscard]] std::tuple<int,int,int> GetNumbers() const noexcept;
   [[nodiscard]] int GetNumber(Number number) const;
   [[nodiscard]] int GetAnswerOnAnyQuestion() const noexcept;
   [[nodiscard]] int GetA() const noexcept;

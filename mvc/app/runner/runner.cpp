@@ -4,7 +4,7 @@
 
 namespace mvc::app {
 
-static void Run(model::DeepThought& model, model::DeepThought::Number number, std::atomic<bool>& running) {
+static void Run(model::DeepThought& model, model::DeepThought::Number number, const std::atomic<bool>& running) {
   bool grow = true;
 
   while (running) {
@@ -48,7 +48,7 @@ void Runner::Start() {
 }
 
 void Runner::Stop() {
-  if(!running_) {
+  if (!running_) {
     return;
   }
   LOG_DEBUG() << "Stop runner for number ";
@@ -65,6 +65,10 @@ void Runner::Stop() {
       LOG_DEBUG() << "Runner has already been stopped";
     }
   }
+}
+
+bool Runner::IsRunning() const {
+  return running_ && *running_ && thread_.joinable(); //fixme дописать тесты
 }
 
 Runner::~Runner() {

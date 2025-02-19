@@ -16,4 +16,8 @@ void Runners::StopRunner(model::DeepThought::Number number) {
   runners_.erase(number);
 }
 
+bool Runners::IsRunning(model::DeepThought::Number number) const {
+  return runners_.contains(number) && runners_.at(number).IsRunning();
+}
+
 }  // namespace mvc::app
