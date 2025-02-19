@@ -1,6 +1,6 @@
 #include "runners.hpp"
 
-namespace mvc::app {
+namespace mvc::utils::run {
 
 Runners::Runners(model::DeepThought& model) : model_(model) {
 }
@@ -20,4 +20,4 @@ bool Runners::IsRunning(model::DeepThought::Number number) const {
   return runners_.contains(number) && runners_.at(number).IsRunning();
 }
 
-}  // namespace mvc::app
+}  // namespace mvc::utils::run

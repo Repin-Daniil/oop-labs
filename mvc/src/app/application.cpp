@@ -3,7 +3,7 @@
 namespace mvc::app {
 
 Application::Application(std::string_view filename, int argc, char** argv)
-    : model_(infrastructure::LoadNumbers(filename)),
+    : model_(utils::serialization::LoadNumbers(filename)),
       storage_(model_, filename),
       runners_(model_),
       qt_app_(argc, argv),

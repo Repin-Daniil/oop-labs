@@ -1,6 +1,8 @@
 #include <model.hpp>
 
-#include "../infrastructure/log/log.hpp"
+#include <algorithm>
+#include <tuple>
+#include <log.hpp>
 
 namespace mvc::model {
 

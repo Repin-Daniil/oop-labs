@@ -4,18 +4,17 @@
 #include <thread>
 #include "catch.hpp"
 
-#include <app/runner/runner.h>
-#include <app/runner/runner.h> // check include guards
-#include <infrastructure/log/log.hpp>
+#include <utils/runner/runner.hpp>
+#include <utils/runner/runner.hpp>  // check include guards
 
-#include <infrastructure/log/log.hpp>
+#include <log.hpp>
 
 namespace mvc {
-using namespace mvc::app;
+using namespace mvc::utils::run;
 using namespace mvc::model;
 
 TEST_CASE("Runner starts, runs, and stops correctly", "[Runner]") {
-  infrastructure::log::SetLogLevel(infrastructure::log::LogLevel::OFF);
+  SetLogLevel(utils::log::LogLevel::OFF);
   DeepThought model{10, 20, 30};
   auto test_number = DeepThought::Number::C;
 
@@ -31,9 +30,9 @@ TEST_CASE("Runner starts, runs, and stops correctly", "[Runner]") {
     log_arr[i] = model.GetNumber(test_number);
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
-
+  CHECK(runner.IsRunning());
   runner.Stop();
-
+  CHECK(!runner.IsRunning());
 
   int sum = 0;
 
@@ -45,64 +44,84 @@ TEST_CASE("Runner starts, runs, and stops correctly", "[Runner]") {
 }
 
 TEST_CASE("Runner stops if not started", "[Runner]") {
-  infrastructure::log::SetLogLevel(infrastructure::log::LogLevel::OFF);
+  SetLogLevel(utils::log::LogLevel::OFF);
   DeepThought model{10, 20, 30};
   auto test_number = DeepThought::Number::B;
 
   Runner runner(model, test_number);
-
+  CHECK(!runner.IsRunning());
   CHECK_NOTHROW(runner.Stop());
 }
 
 TEST_CASE("Runner does not double start", "[Runner]") {
-  infrastructure::log::SetLogLevel(infrastructure::log::LogLevel::OFF);
+  SetLogLevel(utils::log::LogLevel::OFF);
   DeepThought model{10, 20, 30};
   auto test_number = DeepThought::Number::A;
 
   Runner runner(model, test_number);
+  CHECK(!runner.IsRunning());
   runner.Start();
   CHECK_NOTHROW(runner.Start());
-
+  CHECK(runner.IsRunning());
   runner.Stop();
+  CHECK(!runner.IsRunning());
 }
 
 TEST_CASE("Runner correctly moves", "[Runner]") {
-  infrastructure::log::SetLogLevel(infrastructure::log::LogLevel::OFF);
+  SetLogLevel(utils::log::LogLevel::OFF);
   DeepThought model{10, 20, 30};
   auto test_number = DeepThought::Number::A;
 
   Runner runner1(model, test_number);
+  CHECK(!runner1.IsRunning());
   runner1.Start();
+  CHECK(runner1.IsRunning());
 
   Runner runner2(std::move(runner1));
+  CHECK(!runner1.IsRunning());
+  CHECK(runner2.IsRunning());
   std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  CHECK(runner2.IsRunning());
   runner2.Stop();
+  CHECK(!runner2.IsRunning());
 }
 
 TEST_CASE("Runner correctly run after move", "[Runner]") {
-  infrastructure::log::SetLogLevel(infrastructure::log::LogLevel::OFF);
+  SetLogLevel(utils::log::LogLevel::OFF);
   DeepThought model{10, 20, 30};
   auto test_number = DeepThought::Number::A;
 
   Runner runner1(model, test_number);
+  CHECK(!runner1.IsRunning());
   Runner runner2(std::move(runner1));
+  CHECK(!runner2.IsRunning());
+  CHECK(!runner1.IsRunning());
   runner1.Start();
+  CHECK(runner1.IsRunning());
+  CHECK(!runner2.IsRunning());
   std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  CHECK(runner1.IsRunning());
+  CHECK(!runner2.IsRunning());
   runner2.Stop();
   runner1.Stop();
+  CHECK(!runner1.IsRunning());
+  CHECK(!runner2.IsRunning());
 }
 
-
 TEST_CASE("Runner thread actually runs", "[Runner]") {
-  infrastructure::log::SetLogLevel(infrastructure::log::LogLevel::OFF);
+  SetLogLevel(utils::log::LogLevel::OFF);
   DeepThought model{10, 20, 30};
   auto test_number = DeepThought::Number::A;
 
   Runner runner(model, test_number);
+  CHECK(!runner.IsRunning());
 
   runner.Start();
+  CHECK(runner.IsRunning());
+
   std::this_thread::sleep_for(std::chrono::milliseconds(100));
   runner.Stop();
+  CHECK(!runner.IsRunning());
 }
 
 }  // namespace mvc

@@ -1,27 +1,22 @@
 #pragma once
 
-#include "ui.hpp"
-
 #include <QtWidgets/QApplication>
-#include <app/runner/runners.hpp>
-
+#include <gui/ui.hpp>
 #include <observer/observer.hpp>
+#include <utils/runner/runners.hpp>
 
 namespace mvc::gui {
 
 class Form : public QMainWindow, public IListener {
   Q_OBJECT
 
- // private slots:
- //  void updateResult();
-
  public:
-  Form(model::DeepThought& model, app::Runners& runners, QWidget* parent = nullptr);
+  Form(model::DeepThought& model, utils::run::Runners& runners, QWidget* parent = nullptr);
   void OnChanged() noexcept override;
 
  private:
   model::DeepThought& model_;
-  app::Runners& runners_;
+  utils::run::Runners& runners_;
 
   NumbersUi ui_{};
 };

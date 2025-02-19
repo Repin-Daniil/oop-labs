@@ -3,11 +3,10 @@
 #include <atomic>
 #include <iostream>
 #include <mutex>
-#include <atomic>
 #include <thread>
 #include <utility>
 
-namespace mvc::infrastructure::log {
+namespace mvc::utils::log {
 
 namespace {
 std::mutex log_mutex_;
@@ -155,4 +154,4 @@ const char* LogStream::GetLogLevelColor(LogLevel level) {
   }
 }
 
-}  // namespace symcpp::utils::log
+}  // namespace mvc::utils::log

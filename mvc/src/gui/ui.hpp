@@ -21,7 +21,7 @@ namespace mvc::gui {
 class NumbersUi {
  public:
   void setup(QMainWindow* MainWindow);
-  
+
   QWidget* centralwidget{};
   QHBoxLayout* main_horizontal_layout{};
   QLabel* main_title{};

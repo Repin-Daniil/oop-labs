@@ -15,7 +15,7 @@
 #include <source_location>
 #include <sstream>
 
-namespace mvc::infrastructure::log {
+namespace mvc::utils::log {
 
 struct BashColors {
   constexpr static const char* RESET = "\033[0m";
@@ -75,9 +75,9 @@ class LogStream {
   std::source_location location_;
 };
 
-#define LOG(level)                                                              \
-  if (mvc::infrastructure::log::LogLevel::level >= mvc::infrastructure::log::GetLogLevel()) \
-  mvc::infrastructure::log::LogStream(mvc::infrastructure::log::LogLevel::level, std::source_location::current())
+#define LOG(level)                                                        \
+  if (mvc::utils::log::LogLevel::level >= mvc::utils::log::GetLogLevel()) \
+  mvc::utils::log::LogStream(mvc::utils::log::LogLevel::level, std::source_location::current())
 
 #define LOG_TRACE() LOG(TRACE)
 #define LOG_DEBUG() LOG(DEBUG)
@@ -86,4 +86,4 @@ class LogStream {
 #define LOG_ERROR() LOG(ERROR)
 #define LOG_CRITICAL() LOG(CRITICAL)
 
-}  // namespace symcpp::utils::log
+}  // namespace mvc::utils::log

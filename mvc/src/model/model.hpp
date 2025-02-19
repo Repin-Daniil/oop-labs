@@ -1,7 +1,9 @@
 #pragma once
 
-#include <observer/observer.hpp>
 #include <shared_mutex>
+#include <tuple>
+
+#include <observer/observer.hpp>
 
 namespace mvc::model {
 
@@ -23,7 +25,7 @@ class DeepThought : public Subject {
   bool IncrementNumber(Number number, int value) noexcept;
   bool DecrementNumber(Number number, int value) noexcept;
 
-  [[nodiscard]] std::tuple<int,int,int> GetNumbers() const noexcept;
+  [[nodiscard]] std::tuple<int, int, int> GetNumbers() const noexcept;
   [[nodiscard]] int GetNumber(Number number) const;
   [[nodiscard]] int GetAnswerOnAnyQuestion() const noexcept;
   [[nodiscard]] int GetA() const noexcept;
@@ -56,5 +58,5 @@ class DeepThought : public Subject {
   bool UpdateC(int value, Policy policy = Policy::NONE);
 
   int Normalize(int value, int left, int right);
-  };
-} // namespace model
+};
+}  // namespace mvc::model

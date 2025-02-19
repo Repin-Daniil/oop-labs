@@ -2,7 +2,7 @@
 
 namespace mvc::gui {
 
-Form::Form(model::DeepThought& model, app::Runners& runners, QWidget* parent)
+Form::Form(model::DeepThought& model, utils::run::Runners& runners, QWidget* parent)
     : model_(model), runners_(runners), QMainWindow(parent) {
   ui_.setup(this);
 
@@ -44,14 +44,12 @@ Form::Form(model::DeepThought& model, app::Runners& runners, QWidget* parent)
     int value = ui_.b_line_input->text().toInt(&ok);
     if (!ok || !model_.UpdateNumber(model::DeepThought::Number::B, value))
       ui_.b_line_input->setText(QString::number(model_.GetB()));
-    ;
   });
   connect(ui_.c_line_input, &QLineEdit::editingFinished, this, [this]() {
     bool ok;
     int value = ui_.c_line_input->text().toInt(&ok);
     if (!ok || !model_.UpdateNumber(model::DeepThought::Number::C, value))
       ui_.c_line_input->setText(QString::number(model_.GetC()));
-    ;
   });
 
   connect(ui_.a_runner_button, &QPushButton::clicked, this, [this]() {
