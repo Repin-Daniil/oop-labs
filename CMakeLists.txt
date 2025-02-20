@@ -8,7 +8,7 @@ add_subdirectory(third_party/symcpp)
 
 # Подключаем подпроекты
 add_subdirectory(cpp)
-add_subdirectory(stable_vector)
+add_subdirectory(vector)
 
 
 
