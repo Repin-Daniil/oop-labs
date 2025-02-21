@@ -9,12 +9,10 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_PREFIX_PATH "/Users/daniilr/Develop/qt")
 
-add_library(NUMBERS_LOGGER STATIC src/utils/log/log.cpp)
-target_include_directories(NUMBERS_LOGGER PUBLIC src/utils/log)
 
 add_library(NUMBERS_MODEL STATIC src/model/model.cpp src/model/observer/observer.cpp)
 target_include_directories(NUMBERS_MODEL PUBLIC src/model)
-target_link_libraries(NUMBERS_MODEL PUBLIC NUMBERS_LOGGER)
+target_link_libraries(NUMBERS_MODEL PUBLIC LOGGER)
 
 add_library(NUMBERS_UTILS STATIC src/utils/runner/runners.cpp src/utils/runner/runner.cpp src/utils/storage/storage.cpp)
 target_include_directories(NUMBERS_UTILS PUBLIC src/)
