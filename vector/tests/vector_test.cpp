@@ -13,8 +13,8 @@ namespace container {
 
   template <class T>
   void Equal(const vector<T>& real, const std::vector<T>& required) {
-    REQUIRE(real.Size() == required.size());
-    for (size_t i = 0u; i < real.Size(); ++i) {
+    REQUIRE(real.size() == required.size());
+    for (size_t i = 0u; i < real.size(); ++i) {
       REQUIRE(real[i] == required[i]);
     }
   }
@@ -25,41 +25,41 @@ namespace container {
 
   TEST_CASE("Member Types", "[vector]") {
     REQUIRE((std::is_same_v<vector<int>::ValueType, int>));
-    REQUIRE((std::is_same_v<vector<int>::Pointer, decltype(std::declval<vector<int>>().Data())>));
-    REQUIRE((std::is_same_v<vector<int>::ConstPointer, decltype(std::declval<const vector<int>>().Data())>));
+    REQUIRE((std::is_same_v<vector<int>::Pointer, decltype(std::declval<vector<int>>().data())>));
+    REQUIRE((std::is_same_v<vector<int>::ConstPointer, decltype(std::declval<const vector<int>>().data())>));
     REQUIRE((std::is_same_v<vector<int>::Reference, decltype(std::declval<vector<int>>()[0])>));
-    REQUIRE((std::is_same_v<vector<int>::Reference, decltype(std::declval<vector<int>>().At(0))>));
-    REQUIRE((std::is_same_v<vector<int>::Reference, decltype(std::declval<vector<int>>().Front())>));
-    REQUIRE((std::is_same_v<vector<int>::Reference, decltype(std::declval<vector<int>>().Back())>));
+    REQUIRE((std::is_same_v<vector<int>::Reference, decltype(std::declval<vector<int>>().at(0))>));
+    REQUIRE((std::is_same_v<vector<int>::Reference, decltype(std::declval<vector<int>>().front())>));
+    REQUIRE((std::is_same_v<vector<int>::Reference, decltype(std::declval<vector<int>>().back())>));
     REQUIRE((std::is_same_v<vector<int>::ConstReference, decltype(std::declval<const vector<int>>()[0])>));
-    REQUIRE((std::is_same_v<vector<int>::ConstReference, decltype(std::declval<const vector<int>>().At(0))>));
-    REQUIRE((std::is_same_v<vector<int>::ConstReference, decltype(std::declval<const vector<int>>().Front())>));
-    REQUIRE((std::is_same_v<vector<int>::ConstReference, decltype(std::declval<const vector<int>>().Back())>));
-    REQUIRE((std::is_same_v<vector<int>::SizeType, decltype(std::declval<const vector<int>>().Size())>));
-    REQUIRE((std::is_same_v<vector<int>::SizeType, decltype(std::declval<const vector<int>>().Capacity())>));
+    REQUIRE((std::is_same_v<vector<int>::ConstReference, decltype(std::declval<const vector<int>>().at(0))>));
+    REQUIRE((std::is_same_v<vector<int>::ConstReference, decltype(std::declval<const vector<int>>().front())>));
+    REQUIRE((std::is_same_v<vector<int>::ConstReference, decltype(std::declval<const vector<int>>().back())>));
+    REQUIRE((std::is_same_v<vector<int>::SizeType, decltype(std::declval<const vector<int>>().size())>));
+    REQUIRE((std::is_same_v<vector<int>::SizeType, decltype(std::declval<const vector<int>>().capacity())>));
   }
 
   TEST_CASE("Default", "[Constructor]") {
     const vector<int> v;
-    REQUIRE(v.Size() == 0u);
-    REQUIRE(v.Capacity() == 0u);
-    REQUIRE(v.Data() == nullptr);
-    REQUIRE(v.Empty());
+    REQUIRE(v.size() == 0u);
+    REQUIRE(v.capacity() == 0u);
+    REQUIRE(v.data() == nullptr);
+    REQUIRE(v.empty());
   }
 
   TEST_CASE("Single Parameter", "[Constructor]") {
     {
       const vector<std::string> v(5u);
       Equal(v, std::vector<std::string>(5u));
-      REQUIRE(v.Capacity() == 5u);
-      REQUIRE_FALSE(v.Empty());
+      REQUIRE(v.capacity() == 5u);
+      REQUIRE_FALSE(v.empty());
     }
 
     {
       const vector<std::unique_ptr<int>> v(200u);
       Equal(v, std::vector<std::unique_ptr<int>>(200u));
-      REQUIRE(v.Capacity() == 200u);
-      REQUIRE_FALSE(v.Empty());
+      REQUIRE(v.capacity() == 200u);
+      REQUIRE_FALSE(v.empty());
     }
 
     REQUIRE_FALSE((std::is_convertible_v<unsigned, vector<int>>));
@@ -68,9 +68,9 @@ namespace container {
   TEST_CASE("FillInitialization", "[Constructor]") {
     {
       const vector<int> v(0, 5);
-      REQUIRE(v.Size() == 0u);
-      REQUIRE(v.Capacity() == 0u);
-      REQUIRE(v.Data() == nullptr);
+      REQUIRE(v.size() == 0u);
+      REQUIRE(v.capacity() == 0u);
+      REQUIRE(v.data() == nullptr);
     }
 
     {
@@ -78,7 +78,7 @@ namespace container {
 
       const vector<std::string> v(5u, std::string(filler));
       Equal(v, std::vector<std::string>(5u, std::string(filler)));
-      REQUIRE(v.Capacity() == 5u);
+      REQUIRE(v.capacity() == 5u);
     }
   }
 
@@ -87,9 +87,9 @@ namespace container {
 
     {
       const vector<int> v(arr, arr);
-      REQUIRE(v.Size() == 0u);
-      REQUIRE(v.Capacity() == 0u);
-      REQUIRE(v.Data() == nullptr);
+      REQUIRE(v.size() == 0u);
+      REQUIRE(v.capacity() == 0u);
+      REQUIRE(v.data() == nullptr);
     }
 
     {
@@ -112,9 +112,9 @@ namespace container {
   TEST_CASE("InitializerList", "[Constructor]") {
     {
       const vector<int> v{};
-      REQUIRE(v.Size() == 0u);
-      REQUIRE(v.Capacity() == 0u);
-      REQUIRE(v.Data() == nullptr);
+      REQUIRE(v.size() == 0u);
+      REQUIRE(v.capacity() == 0u);
+      REQUIRE(v.data() == nullptr);
     }
 
     {
@@ -127,12 +127,12 @@ namespace container {
     {
       const vector<int> empty;
       const auto v = empty;
-      REQUIRE(empty.Size() == 0u);
-      REQUIRE(empty.Capacity() == 0u);
-      REQUIRE(empty.Data() == nullptr);
-      REQUIRE(v.Size() == 0u);
-      REQUIRE(v.Capacity() == 0u);
-      REQUIRE(v.Data() == nullptr);
+      REQUIRE(empty.size() == 0u);
+      REQUIRE(empty.capacity() == 0u);
+      REQUIRE(empty.data() == nullptr);
+      REQUIRE(v.size() == 0u);
+      REQUIRE(v.capacity() == 0u);
+      REQUIRE(v.data() == nullptr);
     }
 
     {
@@ -147,21 +147,21 @@ namespace container {
     {
       vector<int> empty;
       const auto v = std::move(empty);
-      REQUIRE(empty.Size() == 0u);
-      REQUIRE(empty.Capacity() == 0u);
-      REQUIRE(empty.Data() == nullptr);
-      REQUIRE(v.Size() == 0u);
-      REQUIRE(v.Capacity() == 0u);
-      REQUIRE(v.Data() == nullptr);
+      REQUIRE(empty.size() == 0u);
+      REQUIRE(empty.capacity() == 0u);
+      REQUIRE(empty.data() == nullptr);
+      REQUIRE(v.size() == 0u);
+      REQUIRE(v.capacity() == 0u);
+      REQUIRE(v.data() == nullptr);
     }
 
     {
       vector<std::vector<int>> values{{1, 2}, {3, 4, 5}};
       const auto v = std::move(values);
       Equal(v, std::vector<std::vector<int>>{{1, 2}, {3, 4, 5}});
-      REQUIRE(values.Size() == 0u);
-      REQUIRE(values.Capacity() == 0u);
-      REQUIRE(values.Data() == nullptr);
+      REQUIRE(values.size() == 0u);
+      REQUIRE(values.capacity() == 0u);
+      REQUIRE(values.data() == nullptr);
     }
   }
 
@@ -170,27 +170,27 @@ namespace container {
       const vector<int> empty;
       vector<int> v;
       v = empty;
-      REQUIRE(empty.Size() == 0u);
-      REQUIRE(empty.Capacity() == 0u);
-      REQUIRE(empty.Data() == nullptr);
-      REQUIRE(v.Size() == 0u);
-      REQUIRE(v.Capacity() == 0u);
-      REQUIRE(v.Data() == nullptr);
+      REQUIRE(empty.size() == 0u);
+      REQUIRE(empty.capacity() == 0u);
+      REQUIRE(empty.data() == nullptr);
+      REQUIRE(v.size() == 0u);
+      REQUIRE(v.capacity() == 0u);
+      REQUIRE(v.data() == nullptr);
 
       v = v;
-      REQUIRE(v.Size() == 0u);
-      REQUIRE(v.Capacity() == 0u);
-      REQUIRE(v.Data() == nullptr);
+      REQUIRE(v.size() == 0u);
+      REQUIRE(v.capacity() == 0u);
+      REQUIRE(v.data() == nullptr);
     }
 
     SECTION("Empty to filled") {
       const vector<int> empty;
       vector<int> v{1, 2, 3};
       v = empty;
-      REQUIRE(empty.Size() == 0u);
-      REQUIRE(empty.Capacity() == 0u);
-      REQUIRE(empty.Data() == nullptr);
-      REQUIRE(v.Size() == 0u);
+      REQUIRE(empty.size() == 0u);
+      REQUIRE(empty.capacity() == 0u);
+      REQUIRE(empty.data() == nullptr);
+      REQUIRE(v.size() == 0u);
     }
 
     SECTION("Filled to empty") {
@@ -240,71 +240,71 @@ namespace container {
       vector<int> v;
 
       v = std::move(empty);
-      REQUIRE(empty.Size() == 0u);
-      REQUIRE(empty.Capacity() == 0u);
-      REQUIRE(empty.Data() == nullptr);
-      REQUIRE(v.Size() == 0u);
-      REQUIRE(v.Capacity() == 0u);
-      REQUIRE(v.Data() == nullptr);
+      REQUIRE(empty.size() == 0u);
+      REQUIRE(empty.capacity() == 0u);
+      REQUIRE(empty.data() == nullptr);
+      REQUIRE(v.size() == 0u);
+      REQUIRE(v.capacity() == 0u);
+      REQUIRE(v.data() == nullptr);
 
       v = vector<int>{};
-      REQUIRE(v.Size() == 0u);
-      REQUIRE(v.Capacity() == 0u);
-      REQUIRE(v.Data() == nullptr);
+      REQUIRE(v.size() == 0u);
+      REQUIRE(v.capacity() == 0u);
+      REQUIRE(v.data() == nullptr);
     }
 
     SECTION("Empty to filled") {
       vector<int> empty;
       vector<int> v{1, 2, 3};
       v = std::move(empty);
-      REQUIRE(empty.Size() == 0u);
-      REQUIRE(empty.Capacity() == 0u);
-      REQUIRE(empty.Data() == nullptr);
-      REQUIRE(v.Size() == 0u);
+      REQUIRE(empty.size() == 0u);
+      REQUIRE(empty.capacity() == 0u);
+      REQUIRE(empty.data() == nullptr);
+      REQUIRE(v.size() == 0u);
 
       v = vector<int>{1, 2, 3};
       v = vector<int>{};
-      REQUIRE(v.Size() == 0u);
+      REQUIRE(v.size() == 0u);
     }
 
     SECTION("Filled to empty") {
       vector<int> values{1, 2, 3};
-      const auto p_values = values.Data();
+      const auto p_values = values.data();
       vector<int> v;
       v = std::move(values);
       Equal(v, std::vector<int>{1, 2, 3});
-      REQUIRE(p_values == v.Data());
-      REQUIRE(values.Size() == 0u);
-      REQUIRE(values.Capacity() == 0u);
-      REQUIRE(values.Data() == nullptr);
+      REQUIRE(p_values == v.data());
+      REQUIRE(values.size() == 0u);
+      REQUIRE(values.capacity() == 0u);
+      REQUIRE(values.data() == nullptr);
 
       v = vector<int>{4, 5, 6};
       Equal(v, std::vector<int>{4, 5, 6});
-      REQUIRE(p_values != v.Data());
+      REQUIRE(p_values != v.data());
     }
 
     SECTION("Small to large") {
       vector<int> large(1000, 11);
       vector<int> small{1, 2, 3};
-      const auto p_small = small.Data();
+      const auto p_small = small.data();
       large = std::move(small);
       Equal(large, std::vector<int>{1, 2, 3});
-      REQUIRE(p_small == large.Data());
-      REQUIRE(small.Size() == 0u);
-      REQUIRE(small.Capacity() == 0u);
-      REQUIRE(small.Data() == nullptr);
+      REQUIRE(p_small == large.data());
+      REQUIRE(small.size() == 0u);
+      REQUIRE(small.capacity() == 0u);
+      REQUIRE(small.data() == nullptr);
     }
 
     SECTION("Large to small") {
       vector<int> large(1000, 11);
       vector<int> small{1, 2, 3};
-      const auto p_large = large.Data();
+      const auto p_large = large.data();
       small = std::move(large);
       Equal(small, std::vector<int>(1000, 11));
-      REQUIRE(p_large == small.Data());
-      REQUIRE(large.Size() == 0u);
-      REQUIRE(large.Capacity() == 0u);
-      REQUIRE(large.Data() == nullptr);
+      REQUIRE(p_large == small.data());
+      REQUIRE(large.size() == 0u);
+      REQUIRE(large.capacity() == 0u);
+      REQUIRE(large.data() == nullptr);
     }
   }
 
@@ -312,15 +312,15 @@ namespace container {
     vector<int> v{1, 2, 3, 4, 5};
 
     {
-      REQUIRE(v.Front() == 1);
-      v.Front() = -1;
-      REQUIRE(std::as_const(v).Front() == -1);
+      REQUIRE(v.front() == 1);
+      v.front() = -1;
+      REQUIRE(std::as_const(v).front() == -1);
     }
 
     {
-      REQUIRE(v.Back() == 5);
-      v.Back() = -5;
-      REQUIRE(std::as_const(v).Back() == -5);
+      REQUIRE(v.back() == 5);
+      v.back() = -5;
+      REQUIRE(std::as_const(v).back() == -5);
     }
 
     {
@@ -330,11 +330,11 @@ namespace container {
     }
 
     {
-      REQUIRE(v.At(2) == 3);
-      v.At(2) = -3;
-      REQUIRE(std::as_const(v).At(2) == -3);
-      REQUIRE_THROWS_AS(v.At(5), std::out_of_range);                 // NOLINT
-      REQUIRE_THROWS_AS(std::as_const(v).At(5), std::out_of_range);  // NOLINT
+      REQUIRE(v.at(2) == 3);
+      v.at(2) = -3;
+      REQUIRE(std::as_const(v).at(2) == -3);
+      REQUIRE_THROWS_AS(v.at(5), std::out_of_range);                 // NOLINT
+      REQUIRE_THROWS_AS(std::as_const(v).at(5), std::out_of_range);  // NOLINT
     }
   }
 
@@ -342,97 +342,97 @@ namespace container {
     SECTION("Empty to empty") {
       vector<int> a;
       vector<int> b;
-      a.Swap(b);
-      REQUIRE(a.Data() == nullptr);
-      REQUIRE(a.Size() == 0u);
-      REQUIRE(a.Capacity() == 0u);
-      REQUIRE(b.Data() == nullptr);
-      REQUIRE(b.Size() == 0u);
-      REQUIRE(b.Capacity() == 0u);
+      a.swap(b);
+      REQUIRE(a.data() == nullptr);
+      REQUIRE(a.size() == 0u);
+      REQUIRE(a.capacity() == 0u);
+      REQUIRE(b.data() == nullptr);
+      REQUIRE(b.size() == 0u);
+      REQUIRE(b.capacity() == 0u);
     }
 
     SECTION("Empty to filled") {
       vector<int> a;
       vector<int> b{1, 2, 3};
-      const auto pb = b.Data();
-      a.Swap(b);
+      const auto pb = b.data();
+      a.swap(b);
       Equal(a, std::vector<int>{1, 2, 3});
-      REQUIRE(a.Data() == pb);
-      REQUIRE(b.Data() == nullptr);
-      REQUIRE(b.Size() == 0u);
-      REQUIRE(b.Capacity() == 0u);
+      REQUIRE(a.data() == pb);
+      REQUIRE(b.data() == nullptr);
+      REQUIRE(b.size() == 0u);
+      REQUIRE(b.capacity() == 0u);
     }
 
     SECTION("Small to large") {
       vector<int> large(1000, 11);
       vector<int> small{1, 2, 3};
-      const auto p_small = small.Data();
-      const auto p_large = large.Data();
-      small.Swap(large);
+      const auto p_small = small.data();
+      const auto p_large = large.data();
+      small.swap(large);
       Equal(small, std::vector<int>(1000, 11));
       Equal(large, std::vector<int>{1, 2, 3});
-      REQUIRE(small.Data() == p_large);
-      REQUIRE(large.Data() == p_small);
+      REQUIRE(small.data() == p_large);
+      REQUIRE(large.data() == p_small);
     }
   }
 
   TEST_CASE("Clear", "[DataManipulation]") {
     {
       vector<std::unique_ptr<int>> empty;
-      empty.Clear();
-      REQUIRE(empty.Data() == nullptr);
-      REQUIRE(empty.Size() == 0u);
-      REQUIRE(empty.Capacity() == 0u);
+      empty.clear();
+      REQUIRE(empty.data() == nullptr);
+      REQUIRE(empty.size() == 0u);
+      REQUIRE(empty.capacity() == 0u);
     }
 
     {
       vector<int> v(1000, 11);
-      v.Clear();
-      REQUIRE(v.Size() == 0u);
-      REQUIRE(v.Empty());
+      v.clear();
+      REQUIRE(v.size() == 0u);
+      REQUIRE(v.empty());
     }
 
     {
       vector<std::unique_ptr<int>> v(2);
       v[0] = std::make_unique<int>(1);
       v[1] = std::make_unique<int>(2);
-      v.Clear();
-      REQUIRE(v.Size() == 0u);
-      REQUIRE(v.Empty());
+      v.clear();
+      REQUIRE(v.size() == 0u);
+      REQUIRE(v.empty());
     }
   }
 
   TEST_CASE("Resize", "[ReallocationStrategy]") {
     {
       vector<std::unique_ptr<int>> v;
-      v.Resize(0u);
-      REQUIRE(v.Data() == nullptr);
-      REQUIRE(v.Size() == 0u);
-      REQUIRE(v.Capacity() == 0u);
+      v.resize(0u);
+      REQUIRE(v.data() == nullptr);
+      REQUIRE(v.size() == 0u);
+      REQUIRE(v.capacity() == 0u);
     }
 
     {
       vector<std::unique_ptr<int>> v;
-      v.Resize(5u);
+      v.resize(5u);
       Equal(v, std::vector<std::unique_ptr<int>>(5u));
-      REQUIRE(v.Capacity() >= 5u);
-      REQUIRE(v.Capacity() <= 10u);
+      REQUIRE(v.capacity() >= 5u);
+      REQUIRE(v.capacity() <= 10u);
     }
 
     {
       vector<int> v;
-      v.Resize(5u, 11);
+      v.resize(5u, 11);
       Equal(v, std::vector<int>(5u, 11));
-      REQUIRE(v.Capacity() >= 5u);
-      REQUIRE(v.Capacity() <= 10u);
+      REQUIRE(v.capacity() >= 5u);
+      REQUIRE(v.capacity() <= 10u);
     }
 
     {
       vector<int> v(10u, 5);
-      const auto pv = v.Data();
-      v.Resize(10u);
+      const auto pv = v.data();
+      v.resize(10u);
       Equal(v, std::vector<int>(10, 5));
-      REQUIRE(pv == v.Data());
+      REQUIRE(pv == v.data());
     }
 
     {
@@ -440,12 +440,12 @@ namespace container {
       for (int i = 0; i < 100; ++i) {
         v[i] = std::make_unique<int>(i);
       }
-      REQUIRE(v.Capacity() < 1000u);
-      v.Resize(1000);
+      REQUIRE(v.capacity() < 1000u);
+      v.resize(1000);
 
-      REQUIRE(v.Size() == 1000u);
-      REQUIRE(v.Capacity() >= 1000u);
-      REQUIRE(v.Capacity() <= 2000u);
+      REQUIRE(v.size() == 1000u);
+      REQUIRE(v.capacity() >= 1000u);
+      REQUIRE(v.capacity() <= 2000u);
       for (int i = 0; i < 100; ++i) {
         REQUIRE(*v[i] == i);
       }
@@ -456,12 +456,12 @@ namespace container {
 
     {
       vector<int> v(100u, 11);
-      REQUIRE(v.Capacity() < 1000u);
-      v.Resize(1000u, -11);
+      REQUIRE(v.capacity() < 1000u);
+      v.resize(1000u, -11);
 
-      REQUIRE(v.Size() == 1000u);
-      REQUIRE(v.Capacity() >= 1000u);
-      REQUIRE(v.Capacity() <= 2000u);
+      REQUIRE(v.size() == 1000u);
+      REQUIRE(v.capacity() >= 1000u);
+      REQUIRE(v.capacity() <= 2000u);
       for (int i = 0; i < 100; ++i) {
         REQUIRE(v[i] == 11);
       }
@@ -472,74 +472,74 @@ namespace container {
 
     {
       vector<int> v(1000u, 11);
-      const auto pv = v.Data();
+      const auto pv = v.data();
 
-      v.Resize(400u, -1);
+      v.resize(400u, -1);
       Equal(v, std::vector<int>(400u, 11));
-      REQUIRE(pv == v.Data());
+      REQUIRE(pv == v.data());
 
-      v.Resize(100u);
+      v.resize(100u);
       Equal(v, std::vector<int>(100u, 11));
-      REQUIRE(pv == v.Data());
+      REQUIRE(pv == v.data());
 
-      v.Resize(500u, -11);
+      v.resize(500u, -11);
       for (int i = 0; i < 100; ++i) {
         REQUIRE(v[i] == 11);
       }
       for (int i = 100; i < 500; ++i) {
         REQUIRE(v[i] == -11);
       }
-      REQUIRE(v.Size() == 500u);
-      REQUIRE(pv == v.Data());
+      REQUIRE(v.size() == 500u);
+      REQUIRE(pv == v.data());
 
-      v.Resize(750);
+      v.resize(750);
       for (int i = 0; i < 100; ++i) {
         REQUIRE(v[i] == 11);
       }
       for (int i = 100; i < 500; ++i) {
         REQUIRE(v[i] == -11);
       }
-      REQUIRE(v.Size() == 750u);
-      REQUIRE(pv == v.Data());
+      REQUIRE(v.size() == 750u);
+      REQUIRE(pv == v.data());
     }
   }
 
   TEST_CASE("Reserve", "[ReallocationStrategy]") {
     {
       vector<std::unique_ptr<int>> v;
-      v.Reserve(0u);
-      REQUIRE(v.Data() == nullptr);
-      REQUIRE(v.Size() == 0u);
-      REQUIRE(v.Capacity() == 0u);
+      v.reserve(0u);
+      REQUIRE(v.data() == nullptr);
+      REQUIRE(v.size() == 0u);
+      REQUIRE(v.capacity() == 0u);
     }
 
     {
       vector<int> empty;
-      empty.Reserve(10u);
+      empty.reserve(10u);
       Equal(empty, std::vector<int>{});
-      REQUIRE(empty.Capacity() >= 10u);
-      REQUIRE(empty.Data() != nullptr);
+      REQUIRE(empty.capacity() >= 10u);
+      REQUIRE(empty.data() != nullptr);
     }
 
     {
       vector<std::unique_ptr<int>> empty;
-      empty.Reserve(10u);
+      empty.reserve(10u);
       Equal(empty, std::vector<std::unique_ptr<int>>{});
-      REQUIRE(empty.Capacity() >= 10u);
-      REQUIRE(empty.Data() != nullptr);
+      REQUIRE(empty.capacity() >= 10u);
+      REQUIRE(empty.data() != nullptr);
     }
 
     {
       vector<int> v(10u, 5);
-      const auto pv = v.Data();
+      const auto pv = v.data();
 
-      v.Reserve(10u);
+      v.reserve(10u);
       Equal(v, std::vector<int>(10u, 5));
-      REQUIRE(pv == v.Data());
+      REQUIRE(pv == v.data());
 
-      v.Reserve(5u);
+      v.reserve(5u);
       Equal(v, std::vector<int>(10u, 5));
-      REQUIRE(pv == v.Data());
+      REQUIRE(pv == v.data());
     }
 
     {
@@ -547,12 +547,12 @@ namespace container {
       for (int i = 0; i < 100; ++i) {
         v[i] = std::make_unique<int>(i);
       }
-      REQUIRE(v.Capacity() < 1000u);
-      v.Reserve(1000u);
+      REQUIRE(v.capacity() < 1000u);
+      v.reserve(1000u);
 
-      REQUIRE(v.Size() == 100u);
-      REQUIRE(v.Capacity() >= 1000u);
-      REQUIRE(v.Capacity() <= 2000u);
+      REQUIRE(v.size() == 100u);
+      REQUIRE(v.capacity() >= 1000u);
+      REQUIRE(v.capacity() <= 2000u);
       for (int i = 0; i < 100; ++i) {
         REQUIRE(*v[i] == i);
       }
@@ -562,19 +562,19 @@ namespace container {
   TEST_CASE("ShrinkToFit", "[ReallocationStrategy]") {
     {
       vector<int> empty;
-      empty.ShrinkToFit();
-      REQUIRE(empty.Data() == nullptr);
-      REQUIRE(empty.Size() == 0u);
-      REQUIRE(empty.Capacity() == 0u);
+      empty.shrink_to_fit();
+      REQUIRE(empty.data() == nullptr);
+      REQUIRE(empty.size() == 0u);
+      REQUIRE(empty.capacity() == 0u);
     }
 
     {
       vector<std::unique_ptr<int>> empty;
-      empty.Reserve(10u);
-      empty.ShrinkToFit();
-      REQUIRE(empty.Data() == nullptr);
-      REQUIRE(empty.Size() == 0u);
-      REQUIRE(empty.Capacity() == 0u);
+      empty.reserve(10u);
+      empty.shrink_to_fit();
+      REQUIRE(empty.data() == nullptr);
+      REQUIRE(empty.size() == 0u);
+      REQUIRE(empty.capacity() == 0u);
     }
 
     {
@@ -582,23 +582,23 @@ namespace container {
       for (int i = 0; i < 16; ++i) {
         v[i] = std::make_unique<int>(i);
       }
-      v.Reserve(100u);
-      v.ShrinkToFit();
+      v.reserve(100u);
+      v.shrink_to_fit();
       for (int i = 0; i < 16; ++i) {
         REQUIRE(*v[i] == i);
       }
-      REQUIRE(v.Size() == 16u);
-      REQUIRE(v.Capacity() == 16u);
+      REQUIRE(v.size() == 16u);
+      REQUIRE(v.capacity() == 16u);
     }
 
     {
       vector<int> v(10u, 10);
-      v.Reserve(1000u);
-      const auto pv = v.Data();
-      v.ShrinkToFit();
+      v.reserve(1000u);
+      const auto pv = v.data();
+      v.shrink_to_fit();
       Equal(v, std::vector<int>(10u, 10));
-      REQUIRE(v.Capacity() == 10u);
-      REQUIRE(pv != v.Data());
+      REQUIRE(v.capacity() == 10u);
+      REQUIRE(pv != v.data());
     }
   }
 
@@ -606,10 +606,10 @@ namespace container {
     {
       vector<std::unique_ptr<int>> v;
       for (int i = 0; i < 100; ++i) {
-        v.PushBack(std::make_unique<int>(i));
-        REQUIRE(v.Size() == static_cast<unsigned>(i + 1));
-        REQUIRE(v.Capacity() >= v.Size());
-        REQUIRE(v.Capacity() <= 2 * v.Size());
+        v.push_back(std::make_unique<int>(i));
+        REQUIRE(v.size() == static_cast<unsigned>(i + 1));
+        REQUIRE(v.capacity() >= v.size());
+        REQUIRE(v.capacity() <= 2 * v.size());
       }
       for (int i = 0; i < 100; ++i) {
         REQUIRE(*v[i] == i);
@@ -622,10 +622,10 @@ namespace container {
         v[i] = i;
       }
       for (int i = 10; i < 100; ++i) {
-        v.PushBack(i);
-        REQUIRE(v.Size() == static_cast<unsigned>(i + 1));
-        REQUIRE(v.Capacity() >= v.Size());
-        REQUIRE(v.Capacity() <= 2 * v.Size());
+        v.push_back(i);
+        REQUIRE(v.size() == static_cast<unsigned>(i + 1));
+        REQUIRE(v.capacity() >= v.size());
+        REQUIRE(v.capacity() <= 2 * v.size());
       }
       for (int i = 0; i < 100; ++i) {
         REQUIRE(v[i] == i);
@@ -637,14 +637,14 @@ namespace container {
     {
       vector<std::unique_ptr<int>> v;
       for (int i = 0; i < 100; ++i) {
-        v.PushBack(std::make_unique<int>(i));
+        v.push_back(std::make_unique<int>(i));
       }
-      const auto capacity = v.Capacity();
+      const auto capacity = v.capacity();
       for (int i = 0; i < 50; ++i) {
-        v.PopBack();
-        REQUIRE(v.Size() == static_cast<unsigned>(100 - i - 1));
+        v.pop_back();
+        REQUIRE(v.size() == static_cast<unsigned>(100 - i - 1));
       }
-      REQUIRE(capacity == v.Capacity());
+      REQUIRE(capacity == v.capacity());
       for (int i = 0; i < 50; ++i) {
         REQUIRE(*v[i] == i);
       }
@@ -656,14 +656,14 @@ namespace container {
         v[i] = i;
       }
       for (int i = 10; i < 100; ++i) {
-        v.PushBack(i);
+        v.push_back(i);
       }
-      const auto capacity = v.Capacity();
+      const auto capacity = v.capacity();
       for (int i = 0; i < 50; ++i) {
-        v.PopBack();
-        REQUIRE(v.Size() == static_cast<unsigned>(100 - i - 1));
+        v.pop_back();
+        REQUIRE(v.size() == static_cast<unsigned>(100 - i - 1));
       }
-      REQUIRE(capacity == v.Capacity());
+      REQUIRE(capacity == v.capacity());
       for (int i = 0; i < 50; ++i) {
         REQUIRE(v[i] == i);
       }
@@ -673,17 +673,17 @@ namespace container {
   TEST_CASE("Stress", "[ReallocationStrategy]") {
     vector<std::unique_ptr<int>> v;
     for (int i = 0; i < 1'000'000; ++i) {
-      v.PushBack(std::make_unique<int>(i));
-      REQUIRE(v.Size() == static_cast<unsigned>(i + 1));
-      REQUIRE(v.Capacity() >= v.Size());
-      REQUIRE(v.Capacity() <= 2 * v.Size());
+      v.push_back(std::make_unique<int>(i));
+      REQUIRE(v.size() == static_cast<unsigned>(i + 1));
+      REQUIRE(v.capacity() >= v.size());
+      REQUIRE(v.capacity() <= 2 * v.size());
     }
-    const auto capacity = v.Capacity();
+    const auto capacity = v.capacity();
     for (int i = 0; i < 500'000; ++i) {
-      v.PopBack();
-      REQUIRE(v.Size() == static_cast<unsigned>(1'000'000 - i - 1));
+      v.pop_back();
+      REQUIRE(v.size() == static_cast<unsigned>(1'000'000 - i - 1));
     }
-    REQUIRE(capacity == v.Capacity());
+    REQUIRE(capacity == v.capacity());
     for (int i = 0; i < 500'000; ++i) {
       REQUIRE(*v[i] == i);
     }
@@ -1016,7 +1016,7 @@ namespace container {
       vector<Throwable> v;
       Throwable::until_throw = 3;
       REQUIRE_THROWS_AS(v = values, Exception);  // NOLINT
-      REQUIRE(v.Capacity() >= v.Size());
+      REQUIRE(v.capacity() >= v.size());
 
       try {  // no memory management case
         vector<Throwable> vv;
@@ -1032,7 +1032,7 @@ namespace container {
       vector<Throwable> v(35u);
       Throwable::until_throw = 5;
       REQUIRE_THROWS_AS(v = values, Exception);  // NOLINT
-      REQUIRE(v.Capacity() >= v.Size());
+      REQUIRE(v.capacity() >= v.size());
     }
   }
 
@@ -1059,96 +1059,96 @@ namespace container {
     vector<Throwable> values(5u);
     vector<Throwable> v;
     Throwable::until_throw = 1;
-    REQUIRE_NOTHROW(v.Swap(values));  // NOLINT
+    REQUIRE_NOTHROW(v.swap(values));  // NOLINT
   }
 
   TEST_CASE("Resize Safety", "[Safety]") {
     Throwable::until_throw = 200;
     vector<Throwable> v(90u);
-    const auto capacity = v.Capacity();
-    const auto data = v.Data();
+    const auto capacity = v.capacity();
+    const auto data = v.data();
 
-    REQUIRE_NOTHROW(v.Resize(90u));  // NOLINT
-    REQUIRE_NOTHROW(v.Resize(50u));  // NOLINT
-    REQUIRE_NOTHROW(v.Resize(10u));  // NOLINT
+    REQUIRE_NOTHROW(v.resize(90u));  // NOLINT
+    REQUIRE_NOTHROW(v.resize(50u));  // NOLINT
+    REQUIRE_NOTHROW(v.resize(10u));  // NOLINT
 
     Throwable::until_throw = 10;
-    REQUIRE_THROWS_AS(v.Resize(200u), Exception);  // NOLINT
-    REQUIRE(v.Size() == 10u);
-    REQUIRE(v.Capacity() == capacity);
-    REQUIRE(v.Data() == data);
+    REQUIRE_THROWS_AS(v.resize(200u), Exception);  // NOLINT
+    REQUIRE(v.size() == 10u);
+    REQUIRE(v.capacity() == capacity);
+    REQUIRE(v.data() == data);
 
     try {  // no memory management case
       Throwable::until_throw = 300;
-      v.Resize(200, {});
+      v.resize(200, {});
     } catch (Exception) {
-      REQUIRE(v.Size() == 10u);
-      REQUIRE(v.Capacity() == capacity);
-      REQUIRE(v.Data() == data);
+      REQUIRE(v.size() == 10u);
+      REQUIRE(v.capacity() == capacity);
+      REQUIRE(v.data() == data);
     }
   }
 
   TEST_CASE("Reserve Safety", "[Safety]") {
     Throwable::until_throw = 55;
     vector<Throwable> v(10u);
-    REQUIRE_NOTHROW(v.Reserve(30u));  // NOLINT
+    REQUIRE_NOTHROW(v.reserve(30u));  // NOLINT
 
-    const auto capacity = v.Capacity();
-    const auto size = v.Size();
-    const auto data = v.Data();
+    const auto capacity = v.capacity();
+    const auto size = v.size();
+    const auto data = v.data();
     try {  // no memory management case
       Throwable::until_throw = 30;
-      v.Reserve(100u);
+      v.reserve(100u);
     } catch (Exception) {
-      REQUIRE(v.Capacity() == capacity);
-      REQUIRE(v.Size() == size);
-      REQUIRE(v.Data() == data);
+      REQUIRE(v.capacity() == capacity);
+      REQUIRE(v.size() == size);
+      REQUIRE(v.data() == data);
     }
   }
 
   TEST_CASE("ShrinkToFit Safety", "[Safety]") {
     Throwable::until_throw = 95;
     vector<Throwable> v(20u);
-    v.Reserve(30u);
-    REQUIRE_NOTHROW(v.ShrinkToFit());  // NOLINT
+    v.reserve(30u);
+    REQUIRE_NOTHROW(v.shrink_to_fit());  // NOLINT
 
-    v.Resize(10);
-    const auto capacity = v.Capacity();
-    const auto size = v.Size();
-    const auto data = v.Data();
+    v.resize(10);
+    const auto capacity = v.capacity();
+    const auto size = v.size();
+    const auto data = v.data();
     try {  // no memory management case
       Throwable::until_throw = 5;
-      v.ShrinkToFit();
+      v.shrink_to_fit();
     } catch (Exception) {
-      REQUIRE(v.Capacity() == capacity);
-      REQUIRE(v.Size() == size);
-      REQUIRE(v.Data() == data);
+      REQUIRE(v.capacity() == capacity);
+      REQUIRE(v.size() == size);
+      REQUIRE(v.data() == data);
     }
   }
 
   TEST_CASE("PushBack Safety", "[Safety]") {
     Throwable::until_throw = 200;
     vector<Throwable> v;
-    v.Reserve(100u);
-    const auto capacity = v.Capacity();
-    const auto data = v.Data();
+    v.reserve(100u);
+    const auto capacity = v.capacity();
+    const auto data = v.data();
     Throwable::until_throw = static_cast<int>(capacity) + 2;
     for (size_t i = 0; i < capacity; ++i) {
-      v.PushBack({});
+      v.push_back({});
     }
     const Throwable object;
-    REQUIRE_THROWS_AS(v.PushBack(object), Exception);  // NOLINT
-    REQUIRE(v.Size() == capacity);
-    REQUIRE(v.Capacity() == capacity);
-    REQUIRE(v.Data() == data);
+    REQUIRE_THROWS_AS(v.push_back(object), Exception);  // NOLINT
+    REQUIRE(v.size() == capacity);
+    REQUIRE(v.capacity() == capacity);
+    REQUIRE(v.data() == data);
 
     try {  // no memory management case
       Throwable::until_throw = static_cast<int>(2 * capacity) + 1;
-      v.PushBack(object);
+      v.push_back(object);
     } catch (...) {
-      REQUIRE(v.Size() == capacity);
-      REQUIRE(v.Capacity() == capacity);
-      REQUIRE(v.Data() == data);
+      REQUIRE(v.size() == capacity);
+      REQUIRE(v.capacity() == capacity);
+      REQUIRE(v.data() == data);
     }
   }
 
@@ -1267,7 +1267,7 @@ namespace container {
     {
       vector<InstanceCounter> a;
       vector<InstanceCounter> b(10u);
-      a.Swap(b);
+      a.swap(b);
       REQUIRE(InstanceCounter::counter == 10u);
     }
     REQUIRE(InstanceCounter::counter == 0u);
@@ -1275,7 +1275,7 @@ namespace container {
     {
       vector<InstanceCounter> a(20u);
       vector<InstanceCounter> b(10u);
-      a.Swap(b);
+      a.swap(b);
       REQUIRE(InstanceCounter::counter == 30u);
     }
     REQUIRE(InstanceCounter::counter == 0u);
@@ -1285,7 +1285,7 @@ namespace container {
     InstanceCounter::counter = 0u;
 
     vector<InstanceCounter> v(10u);
-    v.Clear();
+    v.clear();
     REQUIRE(InstanceCounter::counter == 0u);
   }
 
@@ -1294,22 +1294,22 @@ namespace container {
 
     {
       vector<InstanceCounter> v;
-      v.Resize(100u);
+      v.resize(100u);
       REQUIRE(InstanceCounter::counter == 100u);
-      v.Resize(10u);
+      v.resize(10u);
       REQUIRE(InstanceCounter::counter == 10u);
-      v.Resize(1000u);
+      v.resize(1000u);
       REQUIRE(InstanceCounter::counter == 1000u);
     }
     REQUIRE(InstanceCounter::counter == 0u);
 
     {
       vector<InstanceCounter> v;
-      v.Resize(100u, InstanceCounter{});
+      v.resize(100u, InstanceCounter{});
       REQUIRE(InstanceCounter::counter == 100u);
-      v.Resize(10u, InstanceCounter{});
+      v.resize(10u, InstanceCounter{});
       REQUIRE(InstanceCounter::counter == 10u);
-      v.Resize(1000u, InstanceCounter{});
+      v.resize(1000u, InstanceCounter{});
       REQUIRE(InstanceCounter::counter == 1000u);
     }
     REQUIRE(InstanceCounter::counter == 0u);
@@ -1320,13 +1320,13 @@ namespace container {
 
     {
       vector<InstanceCounter> v;
-      v.Reserve(100u);
+      v.reserve(100u);
       REQUIRE(InstanceCounter::counter == 0u);
-      v.Resize(10u);
+      v.resize(10u);
       REQUIRE(InstanceCounter::counter == 10u);
-      v.Reserve(1000u);
+      v.reserve(1000u);
       REQUIRE(InstanceCounter::counter == 10u);
-      v.Resize(100u);
+      v.resize(100u);
       REQUIRE(InstanceCounter::counter == 100u);
     }
     REQUIRE(InstanceCounter::counter == 0u);
@@ -1337,18 +1337,18 @@ namespace container {
 
     {
       vector<InstanceCounter> v;
-      v.Reserve(100u);
+      v.reserve(100u);
       REQUIRE(InstanceCounter::counter == 0u);
-      v.Resize(10u);
+      v.resize(10u);
       REQUIRE(InstanceCounter::counter == 10u);
-      v.ShrinkToFit();
+      v.shrink_to_fit();
       REQUIRE(InstanceCounter::counter == 10u);
 
-      v.Reserve(1000u);
+      v.reserve(1000u);
       REQUIRE(InstanceCounter::counter == 10u);
-      v.Resize(100u);
+      v.resize(100u);
       REQUIRE(InstanceCounter::counter == 100u);
-      v.ShrinkToFit();
+      v.shrink_to_fit();
       REQUIRE(InstanceCounter::counter == 100u);
     }
     REQUIRE(InstanceCounter::counter == 0u);
@@ -1360,7 +1360,7 @@ namespace container {
     {
       vector<InstanceCounter> v;
       for (size_t i = 0; i < 100; ++i) {
-        v.PushBack({});
+        v.push_back({});
         REQUIRE(InstanceCounter::counter == (i + 1));
       }
     }
@@ -1370,7 +1370,7 @@ namespace container {
       vector<InstanceCounter> v;
       InstanceCounter obj;
       for (size_t i = 0; i < 100; ++i) {
-        v.PushBack(obj);
+        v.push_back(obj);
         REQUIRE(InstanceCounter::counter == (i + 2));
       }
     }
@@ -1383,7 +1383,7 @@ namespace container {
     {
       vector<InstanceCounter> v;
       for (size_t i = 0; i < 100; ++i) {
-        v.EmplaceBack();
+        v.emplace_back();
         REQUIRE(InstanceCounter::counter == (i + 1));
       }
     }
@@ -1392,25 +1392,25 @@ namespace container {
     {
       vector<std::vector<int>> v;
       for (size_t i = 0; i < 10; ++i) {
-        v.EmplaceBack();
-        REQUIRE(v.Size() == static_cast<unsigned>(i + 1));
-        REQUIRE(v.Capacity() >= v.Size());
-        REQUIRE(v.Capacity() <= 2 * v.Size());
-        REQUIRE(v.Back().empty());
+        v.emplace_back();
+        REQUIRE(v.size() == static_cast<unsigned>(i + 1));
+        REQUIRE(v.capacity() >= v.size());
+        REQUIRE(v.capacity() <= 2 * v.size());
+        REQUIRE(v.back().empty());
       }
       for (size_t i = 10; i < 30; ++i) {
-        v.EmplaceBack(10);
-        REQUIRE(v.Size() == static_cast<unsigned>(i + 1));
-        REQUIRE(v.Capacity() >= v.Size());
-        REQUIRE(v.Capacity() <= 2 * v.Size());
-        REQUIRE(v.Back().size() == 10u);
+        v.emplace_back(10);
+        REQUIRE(v.size() == static_cast<unsigned>(i + 1));
+        REQUIRE(v.capacity() >= v.size());
+        REQUIRE(v.capacity() <= 2 * v.size());
+        REQUIRE(v.back().size() == 10u);
       }
       for (size_t i = 30; i < 70; ++i) {
-        v.EmplaceBack(11, -11);
-        REQUIRE(v.Size() == static_cast<unsigned>(i + 1));
-        REQUIRE(v.Capacity() >= v.Size());
-        REQUIRE(v.Capacity() <= 2 * v.Size());
-        REQUIRE(v.Back() == std::vector<int>(11, -11));
+        v.emplace_back(11, -11);
+        REQUIRE(v.size() == static_cast<unsigned>(i + 1));
+        REQUIRE(v.capacity() >= v.size());
+        REQUIRE(v.capacity() <= 2 * v.size());
+        REQUIRE(v.back() == std::vector<int>(11, -11));
       }
     }
   }
@@ -1421,10 +1421,10 @@ namespace container {
     {
       vector<InstanceCounter> v;
       for (int i = 0; i < 100; ++i) {
-        v.PushBack({});
+        v.push_back({});
       }
       for (int i = 0; i < 50; ++i) {
-        v.PopBack();
+        v.pop_back();
         REQUIRE(InstanceCounter::counter == static_cast<unsigned>(100 - i - 1));
       }
     }
