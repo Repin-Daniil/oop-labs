@@ -10,9 +10,9 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_PREFIX_PATH "/Users/daniilr/Develop/qt")
 
 
-add_library(NUMBERS_MODEL STATIC src/model/model.cpp src/model/observer/observer.cpp)
+add_library(NUMBERS_MODEL STATIC src/model/model.cpp)
 target_include_directories(NUMBERS_MODEL PUBLIC src/model)
-target_link_libraries(NUMBERS_MODEL PUBLIC LOGGER)
+target_link_libraries(NUMBERS_MODEL PUBLIC LOGGER OBSERVER)
 
 add_library(NUMBERS_UTILS STATIC src/utils/runner/runners.cpp src/utils/runner/runner.cpp src/utils/storage/storage.cpp)
 target_include_directories(NUMBERS_UTILS PUBLIC src/)
@@ -20,14 +20,14 @@ target_link_libraries(NUMBERS_UTILS PUBLIC NUMBERS_MODEL)
 
 
 
-add_library(NUMBERS_APP STATIC src/app/application.cpp src/gui/ui.cpp src/gui/ui.hpp)
+add_library(NUMBERS_APP STATIC src/app/application.cpp src/view/ui.cpp src/view/form.cpp)
 target_link_libraries(NUMBERS_APP PUBLIC NUMBERS_MODEL NUMBERS_UTILS Qt::Core Qt::Gui Qt::Widgets)
 target_include_directories(NUMBERS_APP PUBLIC src/)
 
 
 find_package(Qt6 COMPONENTS Core gui Widgets REQUIRED)
 
-add_executable(numbers main.cpp src/gui/form.cpp)
+add_executable(numbers main.cpp)
 
 target_link_libraries(numbers NUMBERS_APP)
 

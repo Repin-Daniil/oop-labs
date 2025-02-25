@@ -16,7 +16,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
-namespace mvc::gui {
+namespace mvc::view {
 
 class NumbersUi {
  public:

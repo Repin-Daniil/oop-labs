@@ -6,7 +6,7 @@
 #include <tuple>
 
 #include <model.hpp>
-#include <observer/observer.hpp>
+#include <observer.hpp>
 
 namespace mvc::utils::serialization {
 

@@ -1,6 +1,6 @@
 #include "ui.hpp"
 
-namespace mvc::gui {
+namespace mvc::view {
 
 void NumbersUi::setup(QMainWindow* MainWindow) {
   if (MainWindow->objectName().isEmpty()) MainWindow->setObjectName("MainWindow");
