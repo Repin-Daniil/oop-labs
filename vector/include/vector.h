@@ -16,13 +16,7 @@ namespace container {
 // TODO Включить автодополнение
 // TODO Заменить на всякие Referene и так далее
 // TODO переименовать типы члены
-// FIXME нейронки говорят, что нужно писать так operator new(size * sizeof(T))
 
-/**
- *@brief Hand-made Vector
- *@author GitHub: Repin-Daniil <daniil.r4@yandex.ru>
- *@todo Stroustrup's vector
- */
 namespace detail {
 
 template <typename T>
@@ -86,6 +80,10 @@ class vector_base {
 };
 }  // namespace detail
 
+/**
+ *@brief Hand-made Vector
+ *@author GitHub: Repin-Daniil <daniil.r4@yandex.ru>
+ */
 template <typename T>
 class vector : private detail::vector_base<T> {
  public:
@@ -101,10 +99,12 @@ class vector : private detail::vector_base<T> {
   using ConstReverseIterator = std::reverse_iterator<ConstIterator>;
 
   vector() = default;
-  explicit vector(const std::size_t& size) : detail::vector_base<ValueType>(size) {
-    for (std::size_t i = 0; i < size; ++i) {
-      std::construct_at(arr_ + i);
-      ++size_;
+  explicit vector(const std::size_t& size, bool initialize_elements = true) : detail::vector_base<ValueType>(size) {
+    if (initialize_elements) {
+      for (std::size_t i = 0; i < size; ++i) {
+        std::construct_at(arr_ + i);
+        ++size_;
+      }
     }
   }
 
@@ -221,9 +221,9 @@ class vector : private detail::vector_base<T> {
     this->vector_base::swap(other);  // FIXME Тут точно все в порядке?
   }
 
-  void reserve(std::size_t new_capacity) {
+  void reserve(std::size_t new_capacity) {  // FIXME тут безопасности исключений нет
     if (new_capacity > capacity_) {
-      vector temp(new_capacity);
+      vector temp(new_capacity, false);
 
       if constexpr (std::is_trivially_copyable_v<T>) {
         std::memcpy(temp.data(), arr_, size_ * sizeof(T));
@@ -243,15 +243,41 @@ class vector : private detail::vector_base<T> {
   }
 
   void resize(std::size_t new_size) {
-    if (new_size > capacity_) {
-      reserve(new_size);
-    } else if (size_ < new_size) {
+    if (size_ < new_size) {
       static_assert(std::is_default_constructible_v<ValueType>,
                     "ValueType must be default-constructible for Resize(size_t)");
 
-      while (size_ < new_size) {
-        std::construct_at(arr_ + size_, ValueType());
-        ++size_;
+      if (new_size > capacity_) {
+        SizeType new_capacity = new_size;
+
+        if (new_capacity > capacity_) {
+          vector temp(new_capacity, false);
+
+          if constexpr (std::is_trivially_copyable_v<T>) {
+            std::memcpy(temp.data(), arr_, size_ * sizeof(T));
+            temp.size_ = size_;
+          } else {
+            while (temp.size_ < size_) {
+              if constexpr (std::is_nothrow_move_constructible_v<T> && std::is_nothrow_move_assignable_v<T>) {
+                temp.push_back(std::move(arr_[temp.size_]));
+              } else {
+                temp.push_back(arr_[temp.size_]);
+              }
+            }
+          }
+
+          while (temp.size_ < new_size) {
+            std::construct_at(temp.arr_ + temp.size_);
+            ++temp.size_;
+          }
+          // TODO Можно ли как-то вынести в отдельную функцию??
+          swap(temp);
+        }
+      } else {
+        while (size_ < new_size) {
+          std::construct_at(arr_ + size_);
+          ++size_;
+        }
       }
     } else {
       while (size_ > new_size) {
@@ -262,12 +288,38 @@ class vector : private detail::vector_base<T> {
   }
 
   void resize(std::size_t new_size, const T& value) {
-    if (new_size > capacity_) {
-      reserve(new_size);
-    } else if (size_ < new_size) {
-      while (size_ < new_size) {
-        std::construct_at(arr_ + size_, value);
-        ++size_;
+    if (size_ < new_size) {
+      if (new_size > capacity_) {
+        SizeType new_capacity = new_size;
+
+        if (new_capacity > capacity_) {
+          vector temp(new_capacity, false);
+
+          if constexpr (std::is_trivially_copyable_v<T>) {
+            std::memcpy(temp.data(), arr_, size_ * sizeof(T));
+            temp.size_ = size_;
+          } else {
+            while (temp.size_ < size_) {
+              if constexpr (std::is_nothrow_move_constructible_v<T> && std::is_nothrow_move_assignable_v<T>) {
+                temp.push_back(std::move(arr_[temp.size_]));
+              } else {
+                temp.push_back(arr_[temp.size_]);
+              }
+            }
+          }
+
+          while (temp.size_ < new_size) {
+            std::construct_at(temp.arr_ + temp.size_, value);
+            ++temp.size_;
+          }
+          // TODO Можно ли как-то вынести в отдельную функцию??
+          swap(temp);
+        }
+      } else {
+        while (size_ < new_size) {
+          std::construct_at(arr_ + size_, value);
+          ++size_;
+        }
       }
     } else {
       while (size_ > new_size) {
@@ -279,17 +331,16 @@ class vector : private detail::vector_base<T> {
 
   void shrink_to_fit() {
     if (capacity_ > size_) {
-      vector temp(size_);
+      vector temp(size_, false);
 
       if constexpr (std::is_trivially_copyable_v<T>) {
         std::memcpy(temp.data(), arr_, size_ * sizeof(T));
+        //TODO нужно повызывать деструкторы для тех, кто остался в arr_???
       } else {
-        while (temp.size_ < size_) {
-          if constexpr (std::is_nothrow_move_constructible_v<T> && std::is_nothrow_move_assignable_v<T>) {
-            std::uninitialized_move(arr_, arr_ + size_, temp.data());
-          } else {
-            std::uninitialized_copy(arr_, arr_ + size_, temp.data());
-          }
+        if constexpr (std::is_nothrow_move_constructible_v<T> && std::is_nothrow_move_assignable_v<T>) {
+          std::uninitialized_move(arr_, arr_ + size_, temp.data());
+        } else {
+          std::uninitialized_copy(arr_, arr_ + size_, temp.data());
         }
       }
       temp.size_ = size_;
@@ -298,6 +349,7 @@ class vector : private detail::vector_base<T> {
     }
   }
 
+
   void clear() {
     vector<T> temp;
     swap(temp);
@@ -305,22 +357,74 @@ class vector : private detail::vector_base<T> {
 
   void push_back(const ValueType& value) {
     if (size_ == capacity_) {
-      reserve(capacity_ > 0 ? 2 * capacity_ : 1);
+      SizeType new_capacity = (capacity_ > 0 ? 2 * capacity_ : 1);
+
+      if (new_capacity > capacity_) {
+        vector temp(new_capacity, false);
+
+        if constexpr (std::is_trivially_copyable_v<T>) {
+          std::memcpy(temp.data(), arr_, size_ * sizeof(T));
+          temp.size_ = size_;
+        } else {
+          while (temp.size_ < size_) {
+            if constexpr (std::is_nothrow_move_constructible_v<T> && std::is_nothrow_move_assignable_v<T>) {
+              temp.push_back(std::move(arr_[temp.size_]));
+            } else {
+              temp.push_back(arr_[temp.size_]);
+            }
+          }
+        }
+
+        std::construct_at(temp.arr_ + temp.size_, value);  // FIXME Мы все помували, а тут исключение в копировании
+        ++temp.size_;
+
+        swap(temp);
+      }
+    } else {
+      std::construct_at(arr_ + size_, value);
+      ++size_;
     }
 
-    std::construct_at(arr_ + size_, value);
-    ++size_;
     // TODO Тут по идее try-catch с shrink-to-fit без последнего
     // FIXME или не стоит, вдруг при копировании обратно все тоже отвалится, тодга без reserve
   }
 
   void push_back(T&& value) {
     if (size_ == capacity_) {
-      reserve(capacity_ > 0 ? 2 * capacity_ : 1);
+      SizeType new_capacity = (capacity_ > 0 ? 2 * capacity_ : 1);
+
+      if (new_capacity > capacity_) {
+        vector temp(new_capacity, false);
+
+        if constexpr (std::is_trivially_copyable_v<T>) {
+          std::memcpy(temp.data(), arr_, size_ * sizeof(T));
+          temp.size_ = size_;
+        } else {
+          while (temp.size_ < size_) {
+            if constexpr (std::is_nothrow_move_constructible_v<T> && std::is_nothrow_move_assignable_v<T>) {
+              temp.push_back(std::move(arr_[temp.size_]));
+            } else {
+              temp.push_back(arr_[temp.size_]);
+            }
+          }
+        }
+
+        std::construct_at(temp.arr_ + temp.size_, std::move(value));
+        ++temp.size_;
+
+        swap(temp);
+      }
+    } else {
+      std::construct_at(arr_ + size_, std::move(value));
+      ++size_;
     }
 
-    std::construct_at(arr_ + size_, std::move(value));
-    ++size_;
+    // if (size_ == capacity_) {
+    //   reserve(capacity_ > 0 ? 2 * capacity_ : 1);
+    // }
+    //
+    // std::construct_at(arr_ + size_, std::move(value));
+    // ++size_;
     // TODO Тут по идее try-catch с shrink-to-fit без последнего
     // FIXME или не стоит, вдруг при копировании обратно все тоже отвалится, тодга без reserve
   }
