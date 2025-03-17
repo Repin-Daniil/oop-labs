@@ -1,4 +1,5 @@
 name: vector
+
 on:
   push:
     branches: [ "master" ]
@@ -11,8 +12,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Install cpplint
         run: pip3 install cpplint
+
       - name: Lint C++ files
         run: |
           cd vector/include
@@ -46,16 +49,15 @@ jobs:
         id: strings
         shell: bash
         run: |
-          cd vector
           echo "build-output-dir=${{ github.workspace }}/vector/build" >> "$GITHUB_OUTPUT"
 
       - name: Configure CMake
         run: >
-          cd vector
-          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          cmake
+          -B ${{ steps.strings.outputs.build-output-dir }}
           ${{ matrix.platform.flags }} ${{ matrix.config.flags }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          -S ${{ github.workspace }}
+          -S ${{ github.workspace }}/vector
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
