@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <type_traits>
+#include <utility>
 
 namespace container {
 
@@ -167,7 +168,7 @@ class vector : private detail::vector_base<T> {
 
   Reference at(SizeType pos) {
     if (pos >= size_) {
-      throw std::out_of_range("");  // FIXME название
+      throw std::out_of_range("Vector out of range with pos = " + std::to_string(pos));
     }
 
     return arr_[pos];
@@ -175,7 +176,7 @@ class vector : private detail::vector_base<T> {
 
   ConstReference at(SizeType pos) const {
     if (pos >= size_) {
-      throw std::out_of_range("");  // FIXME название
+      throw std::out_of_range("Vector out of range with pos = " + std::to_string(pos));
     }
 
     return arr_[pos];
@@ -206,10 +207,10 @@ class vector : private detail::vector_base<T> {
   }
 
   void swap(vector<T>& other) noexcept {
-    this->vector_base::swap(other);  // FIXME Тут точно все в порядке?
+    this->vector_base::swap(other);
   }
 
-  void reserve(std::size_t new_capacity) {  // FIXME тут безопасности исключений нет
+  void reserve(std::size_t new_capacity) {
     if (new_capacity > capacity_) {
       vector temp(new_capacity, false);
 
@@ -258,7 +259,7 @@ class vector : private detail::vector_base<T> {
             std::construct_at(temp.arr_ + temp.size_);
             ++temp.size_;
           }
-          // TODO Можно ли как-то вынести в отдельную функцию??
+
           swap(temp);
         }
       } else {
@@ -300,7 +301,7 @@ class vector : private detail::vector_base<T> {
             std::construct_at(temp.arr_ + temp.size_, value);
             ++temp.size_;
           }
-          // TODO Можно ли как-то вынести в отдельную функцию??
+
           swap(temp);
         }
       } else {
@@ -323,7 +324,7 @@ class vector : private detail::vector_base<T> {
 
       if constexpr (std::is_trivially_copyable_v<T>) {
         std::memcpy(temp.data(), arr_, size_ * sizeof(T));
-        //TODO нужно повызывать деструкторы для тех, кто остался в arr_???
+
       } else {
         if constexpr (std::is_nothrow_move_constructible_v<T> && std::is_nothrow_move_assignable_v<T>) {
           std::uninitialized_move(arr_, arr_ + size_, temp.data());
@@ -336,7 +337,6 @@ class vector : private detail::vector_base<T> {
       swap(temp);
     }
   }
-
 
   void clear() {
     vector<T> temp;
@@ -363,7 +363,7 @@ class vector : private detail::vector_base<T> {
           }
         }
 
-        std::construct_at(temp.arr_ + temp.size_, value);  // FIXME Мы все помували, а тут исключение в копировании
+        std::construct_at(temp.arr_ + temp.size_, value);
         ++temp.size_;
 
         swap(temp);
@@ -372,9 +372,6 @@ class vector : private detail::vector_base<T> {
       std::construct_at(arr_ + size_, value);
       ++size_;
     }
-
-    // TODO Тут по идее try-catch с shrink-to-fit без последнего
-    // FIXME или не стоит, вдруг при копировании обратно все тоже отвалится, тодга без reserve
   }
 
   void push_back(T&& value) {
@@ -406,15 +403,6 @@ class vector : private detail::vector_base<T> {
       std::construct_at(arr_ + size_, std::move(value));
       ++size_;
     }
-
-    // if (size_ == capacity_) {
-    //   reserve(capacity_ > 0 ? 2 * capacity_ : 1);
-    // }
-    //
-    // std::construct_at(arr_ + size_, std::move(value));
-    // ++size_;
-    // TODO Тут по идее try-catch с shrink-to-fit без последнего
-    // FIXME или не стоит, вдруг при копировании обратно все тоже отвалится, тодга без reserve
   }
 
   void pop_back() {
@@ -525,14 +513,8 @@ bool operator<=(const vector<T>& first, const vector<T>& second) {
 }
 
 template <class T>
-bool operator>=(const vector<T> &first, const vector<T> &second) {
+bool operator>=(const vector<T>& first, const vector<T>& second) {
   return !(first < second);
 }
 
-template <>
-class vector<bool> {
-  //TODO Реализация для булей
-};
-
-} // namespace container
-
+}  // namespace container
