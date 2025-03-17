@@ -51,8 +51,15 @@ jobs:
         run: |
           echo "build-output-dir=${{ github.workspace }}/vector/build" >> "$GITHUB_OUTPUT"
 
-      - name: Clear CMake cache
-        run: rm -rf ${{ steps.strings.outputs.build-output-dir }}
+      - name: Clean build directory
+        run: |
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            Remove-Item -Recurse -Force vector/build
+          else
+            rm -rf vector/build
+          fi
+        shell: pwsh
+
 
       - name: Configure CMake
         run: >
