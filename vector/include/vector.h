@@ -1,21 +1,9 @@
 #pragma once
-#define VECTOR_MEMORY_IMPLEMENTED
-#include <iostream>
 
 #include <stdexcept>
 #include <type_traits>
-#include <utility>
 
 namespace container {
-
-// TODO Cвой аллокатор? template <class T, class Allocator = allocator<T> >
-// TODO Ревью GPT
-// TODO Лекция Мещерина
-// TODO Сравнить с версией Ильи
-// TODO Залить в контест
-// TODO Включить автодополнение
-// TODO Заменить на всякие Referene и так далее
-// TODO переименовать типы члены
 
 namespace detail {
 

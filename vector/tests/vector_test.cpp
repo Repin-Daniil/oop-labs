@@ -1148,7 +1148,6 @@ TEST_CASE("PushBack Safety", "[Safety]") {
   }
 }
 
-#ifdef VECTOR_MEMORY_IMPLEMENTED
 
 struct InstanceCounter {
   static size_t counter;
@@ -1428,5 +1427,4 @@ TEST_CASE("PopBack Memory", "[Memory]") {
   REQUIRE(InstanceCounter::counter == 0u);
 }
 
-#endif
 }  // namespace container

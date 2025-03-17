@@ -1,13 +1,15 @@
-add_library(VECTOR STATIC src/vector.cpp)
-target_include_directories(VECTOR PUBLIC include)
+enable_testing()
 
-add_executable(vector_run vector_run.cpp)
-target_link_libraries(vector_run VECTOR)
+add_executable(vector_test tests/vector_test.cpp tests/catch.hpp)
+target_include_directories(vector_test PUBLIC include)
 
-add_executable(vector_run_sanitized vector_run.cpp)
-target_link_libraries(vector_run_sanitized VECTOR)
+add_test(NAME VECTOR_TEST COMMAND vector_test)
 
-target_compile_options(vector_run_sanitized PRIVATE -fsanitize=address,undefined -fno-omit-frame-pointer -g)
-target_link_options(vector_run_sanitized PRIVATE -fsanitize=address,undefined)
+# Таргет с санитайзерами
+add_executable(vector_test_sanitized tests/vector_test.cpp tests/catch.hpp)
+target_include_directories(vector_test_sanitized PUBLIC include)
 
-add_subdirectory(tests)
+target_compile_options(vector_test_sanitized PRIVATE -fsanitize=address,undefined -fno-omit-frame-pointer -g)
+target_link_options(vector_test_sanitized PRIVATE -fsanitize=address,undefined)
+
+add_test(NAME VECTOR_TEST_SANITIZED COMMAND vector_test_sanitized)
