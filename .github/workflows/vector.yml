@@ -51,6 +51,7 @@ jobs:
 
       - name: Configure CMake
         run: >
+          cd vector
           cmake -B ${{ steps.strings.outputs.build-output-dir }}
           ${{ matrix.platform.flags }} ${{ matrix.config.flags }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
