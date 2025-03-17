@@ -10,6 +10,4 @@ enable_testing()
 
 add_subdirectory(cpp)
 add_subdirectory(mvc)
-add_subdirectory(stable_vector)
-#add_subdirectory(visual_editor)
-
+add_subdirectory(vector)
