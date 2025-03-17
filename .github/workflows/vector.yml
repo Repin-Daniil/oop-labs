@@ -47,7 +47,7 @@ jobs:
         shell: bash
         run: |
           cd vector
-          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+          echo "build-output-dir=${{ github.workspace }}/vector/build" >> "$GITHUB_OUTPUT"
 
       - name: Configure CMake
         run: >
