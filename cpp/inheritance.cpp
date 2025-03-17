@@ -1,18 +1,18 @@
-#include <symcpp/utils/log.hpp>
-
 #include <execinfo.h>
 #include <cstdlib>
+
+#include <symcpp/utils/log.hpp>
 
 struct SuperBase {
   SuperBase() {
     LOG_DEBUG() << "SuperBase default";
   }
 
-  SuperBase(SuperBase *obj) {
+  explicit SuperBase(SuperBase* obj) {
     LOG_DEBUG() << "SuperBase ptr ctor";
   }
 
-  SuperBase(SuperBase &obj) {
+  SuperBase(SuperBase& obj) {
     LOG_DEBUG() << "SuperBase ref ctor";
   }
 
@@ -21,17 +21,16 @@ struct SuperBase {
   }
 };
 
-
 struct Base : SuperBase {
   Base() {
     LOG_DEBUG() << "Base default";
   }
 
-  Base(Base *obj) {
+  explicit Base(Base* obj) {
     LOG_DEBUG() << "Base ptr ctor";
   }
 
-  Base(Base &obj) {
+  Base(Base& obj) {
     LOG_DEBUG() << "Base ref ctor";
   }
 
@@ -40,17 +39,16 @@ struct Base : SuperBase {
   }
 };
 
-
 struct Derived : Base {
   Derived() {
     LOG_DEBUG() << "Derived default";
   }
 
-  Derived(Derived *obj) {
+  explicit Derived(Derived* obj) {
     LOG_DEBUG() << "Derived ptr ctor";
   }
 
-  Derived(Derived &obj) {
+  Derived(Derived& obj) {
     LOG_DEBUG() << "Derived ref ctor";
   }
 
@@ -62,19 +60,16 @@ struct Derived : Base {
 void func1(Base obj) {
 }
 
-void func2(Base *obj) {
+void func2(Base* obj) {
 }
 
-void func3(Base &obj) {
+void func3(Base& obj) {
 }
-
-
 
 int main() {
-  symcpp::utils::log::SetLogLevel(symcpp::utils::log::LogLevel::DEBUG);
+  SetLogLevel(symcpp::utils::log::LogLevel::DEBUG);
   symcpp::utils::log::SetLogLocationEnabled(false);
   symcpp::utils::log::SetLogTimeEnabled(false);
-
 
   Derived d;
 

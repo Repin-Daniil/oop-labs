@@ -6,12 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(third_party/symcpp)
 
-# Подключаем подпроекты
+enable_testing()
+
 add_subdirectory(cpp)
+add_subdirectory(mvc)
 add_subdirectory(vector)
-
-
-
-
-#add_subdirectory(mvc)
-#add_subdirectory(visual_editor)
