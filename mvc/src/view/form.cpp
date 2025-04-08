@@ -121,4 +121,4 @@ void Form::OnChanged() noexcept {
       },
       Qt::QueuedConnection);
   }
-}  // namespace mvc::gui
+}  // namespace mvc::view

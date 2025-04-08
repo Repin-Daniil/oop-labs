@@ -21,4 +21,4 @@ class Form : public QMainWindow, public IListener {
   NumbersUi ui_{};
 };
 
-}  // namespace mvc::gui
+}  // namespace mvc::view

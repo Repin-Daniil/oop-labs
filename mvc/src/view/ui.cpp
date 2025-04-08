@@ -336,4 +336,4 @@ void NumbersUi::setup(QMainWindow* MainWindow) {
   QMetaObject::connectSlotsByName(MainWindow);
 }
 
-}  // namespace mvc::gui
+}  // namespace mvc::view

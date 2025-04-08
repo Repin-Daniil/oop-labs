@@ -85,4 +85,4 @@ class NumbersUi {
   QSpacerItem* verticalSpacer{};
 };
 
-}  // namespace mvc::gui
+}  // namespace mvc::view
