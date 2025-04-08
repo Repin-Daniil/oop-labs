@@ -1,6 +1,6 @@
 #include "form.hpp"
 
-namespace mvc::gui {
+namespace mvc::view {
 
 Form::Form(model::DeepThought& model, utils::run::Runners& runners, QWidget* parent)
     : model_(model), runners_(runners), QMainWindow(parent) {

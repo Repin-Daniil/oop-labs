@@ -1,11 +1,11 @@
 #pragma once
 
 #include <QtWidgets/QApplication>
-#include <gui/ui.hpp>
-#include <observer/observer.hpp>
+#include <observer.hpp>
 #include <utils/runner/runners.hpp>
+#include <view/ui.hpp>
 
-namespace mvc::gui {
+namespace mvc::view {
 
 class Form : public QMainWindow, public IListener {
   Q_OBJECT

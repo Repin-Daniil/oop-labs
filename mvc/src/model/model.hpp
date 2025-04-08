@@ -3,7 +3,7 @@
 #include <shared_mutex>
 #include <tuple>
 
-#include <observer/observer.hpp>
+#include <observer.hpp>
 
 namespace mvc::model {
 

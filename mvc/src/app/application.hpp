@@ -2,7 +2,7 @@
 
 #include <QApplication>
 
-#include <gui/form.hpp>
+#include <view/form.hpp>
 #include <utils/storage/storage.hpp>
 
 namespace mvc::app {
@@ -21,7 +21,7 @@ class Application {
   utils::run::Runners runners_;
 
   QApplication qt_app_;
-  gui::Form form_;
+  view::Form form_;
 };
 
 }  // namespace mvc::app
