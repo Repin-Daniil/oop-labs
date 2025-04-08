@@ -12,6 +12,4 @@ enable_testing()
 
 add_subdirectory(cpp)
 add_subdirectory(mvc)
-add_subdirectory(circles)
-#add_subdirectory(visual_editor)
-
+add_subdirectory(vector)
