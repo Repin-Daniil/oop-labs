@@ -4,7 +4,7 @@ from src.model.scenarios.geometry import Coord
 
 class FrontSelectStrategy(SelectStrategy):
     def select(self, figures: list, click: Coord) -> list:
-        for figure in figures:
+        for figure in reversed(figures):
             if figure.shoot(click):
                 return [figure]
 

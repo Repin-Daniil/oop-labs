@@ -8,7 +8,7 @@ from src.view.ui import WindowUI
 class Window(QMainWindow):
     keyPressed = pyqtSignal(Qt.Key)
 
-    def __init__(self, title: str, model, hotkeys):
+    def __init__(self, title: str, model, hotkeys, shapes:list[str], strategies:list[str]):
         super(Window, self).__init__()
         self.hotkeys = hotkeys
 
@@ -17,9 +17,10 @@ class Window(QMainWindow):
         self.setMinimumSize(600, 400)
 
         self.ui = WindowUI()
-        self.ui.setup(self)
+        self.ui.setup(self, shapes, strategies)
 
-        self.canvas = CanvasWidget(model)
+        self.canvas = CanvasWidget(model, self)
+
         self.ui.attach_canvas(self.canvas)
         # todo Добавление нужных полей в комбо боксы
 

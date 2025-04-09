@@ -2,16 +2,15 @@ from typing import List
 
 from src.model.scenarios.select_strategy import SelectStrategy
 from src.model.scenarios.strategies.conquer_world import ConquerWorldStrategy
-from src.model.scenarios.strategies.front_select_strategy import FrontSelectStrategy
 from src.model.scenarios.geometry import Coord
 from src.model.model_object import ModelObject
 
 
 class Model:
-    def __init__(self):
+    def __init__(self, strategy: SelectStrategy):
         self.objects = []
         self.objects_dict = dict()
-        self.select_strategy = FrontSelectStrategy()
+        self.select_strategy = strategy
 
     def add_figure(self, figure : ModelObject):
         self.objects_dict[figure.id] = figure
@@ -36,8 +35,8 @@ class Model:
     def get_selected(self) -> List[ModelObject]:
         return [figure for figure in self.objects if figure.is_selected()]
 
-    def SetSelectPolicy(self, select_strategy: SelectStrategy):
+    def set_select_policy(self, select_strategy: SelectStrategy):
         self.select_strategy = select_strategy
 
-    def GetSelectPolicy(self) -> SelectStrategy|None:
+    def get_select_policy(self) -> SelectStrategy|None:
         return self.select_strategy

@@ -3,7 +3,7 @@ from src.model.scenarios.geometry import Coord
 
 class BackSelectStrategy(SelectStrategy):
     def select(self, figures: list, click: Coord) -> list:
-        for figure in reversed(figures):
+        for figure in figures:
             if figure.shoot(click):
                 return [figure]
 

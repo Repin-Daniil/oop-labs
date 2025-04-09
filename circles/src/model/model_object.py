@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Tuple
 
 from src.model.scenarios.geometry import Coord
 
@@ -15,6 +16,10 @@ class ModelObject(ABC):
 
         ModelObject.id_seq.add(figure_id)
         self.id = self.get_name(figure_id)
+
+    @abstractmethod
+    def get_bounding_box(self) -> Tuple[int, int, int, int]:
+        pass
 
     @abstractmethod
     def accept(self, visitor : 'Visitor'):

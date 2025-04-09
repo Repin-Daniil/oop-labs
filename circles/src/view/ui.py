@@ -1,20 +1,21 @@
 from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtGui import QAction, QFont
+from PyQt6.QtGui import QAction, QFont, QColor
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QComboBox, QPushButton, QFrame, QMenuBar, QMenu
 )
 
 from src.view.canvas import CanvasWidget
+from src.view.color_button import ColorButton
 
 
 class WindowUI:
     """UI setup class for the main window of the vector editor."""
 
-    def setup(self, main_window: QMainWindow) -> None:
+    def setup(self, main_window: QMainWindow,shapes: list[str], strategies: list[str]) -> None:
         """Setup the main window UI components."""
         self._setup_actions(main_window)
-        self._setup_central_widget(main_window)
+        self._setup_central_widget(main_window,shapes, strategies)
         self._setup_menu_bar(main_window)
         self._set_texts()
 
@@ -28,7 +29,7 @@ class WindowUI:
         self.action_import = QAction("Import", main_window)
         self.action_export = QAction("Export", main_window)
 
-    def _setup_central_widget(self, main_window: QMainWindow) -> None:
+    def _setup_central_widget(self, main_window: QMainWindow, shapes: list[str], strategies: list[str]) -> None:
         """Setup the central widget and its layout."""
         self.central_widget = QWidget(main_window)
 
@@ -44,16 +45,16 @@ class WindowUI:
         toolbar_layout.addWidget(self.title_label, 0, Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
 
         # Shape selection combo box
-        self.shape_combo_box = self._create_combo_box(["Circle"], default_index=0)
+        self.shape_combo_box = self._create_combo_box(shapes, default_index=0)
         toolbar_layout.addWidget(self.shape_combo_box, 0, Qt.AlignmentFlag.AlignRight)
 
         # Color selection button
-        self.color_button = QPushButton("Choose Color")
+        self.color_button = ColorButton(QColor(0, 0, 0))
         self.color_button.setMinimumSize(QSize(100, 0))
         toolbar_layout.addWidget(self.color_button, 0, Qt.AlignmentFlag.AlignHCenter)
 
         # Strategy selection combo box
-        self.strategy_combo_box = self._create_combo_box(["Strategy 1", "Strategy 2"], default_index=0)
+        self.strategy_combo_box = self._create_combo_box(strategies, default_index=0)
         toolbar_layout.addWidget(self.strategy_combo_box, 0, Qt.AlignmentFlag.AlignLeft)
 
         self.main_layout.addLayout(toolbar_layout)

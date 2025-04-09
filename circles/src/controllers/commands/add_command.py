@@ -18,6 +18,7 @@ class AddCommand(Command):
         for figure in self.target:
             self.model.add_figure(figure)
 
+
     def undo(self):
         if not self.rollback:
             self.rollback = True

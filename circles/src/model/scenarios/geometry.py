@@ -1,6 +1,6 @@
 import math
 from math import hypot
-from typing import Union
+from typing import Union, Tuple
 
 
 class Coord:
@@ -37,6 +37,24 @@ class Coord:
     def __repr__(self) -> str:
         """Строковое представление для отладки"""
         return f"Coord({self.x}, {self.y})"
+
+
+def normalize_figure(area_width, area_height, bounding_box : Tuple[int, int, int, int] ):
+    left, right, top, bottom = bounding_box
+
+    dx = dy = 0
+
+    if left < 0:
+        dx = -left
+    elif right > area_width:
+        dx = area_width - right
+
+    if top < 0:
+        dy = -top
+    elif bottom > area_height:
+        dy = area_height - bottom
+
+    return dx, dy
 
 
 class Line:

@@ -2,11 +2,15 @@ from PyQt6.QtCore import Qt
 
 from src.controllers.command_manager import CommandManager
 from src.controllers.commands.add_command import AddCommand
+from src.controllers.commands.color_command import ChangeColorCommand
 from src.controllers.commands.delete_command import DeleteCommand
+from src.controllers.commands.move_command import MoveCommand
+from src.controllers.commands.resize_command import ResizeCommand
 from src.controllers.commands.select_command import SelectCommand
 from src.controllers.factory import ObjectFactory
 from src.model.model import Model
-from src.model.scenarios.geometry import Coord
+from src.model.scenarios.geometry import Coord, normalize_figure
+from src.model.scenarios.select_strategy import SelectStrategy
 
 
 class InputController:
@@ -14,15 +18,18 @@ class InputController:
     Класс, отвечающий за обработку событий (нажатий клавиш, кликов мыши) и
     выполнение соответствующих команд через CommandManager.
     """
-    def __init__(self, model: Model, factory: ObjectFactory, command_manager: CommandManager, canvas):
+    def __init__(self, model: Model, factory: ObjectFactory, command_manager: CommandManager, canvas, shapes, strategies):
         self.model = model
         self.factory = factory
+        self.shapes = shapes
         self.command_manager = command_manager
         self.canvas = canvas
         # todo регулирование через UI
         self.current_size = 50
         self.current_color = (0, 0, 0)
         self.current_object_type = "circle"
+        self.strategies = strategies
+
 
     def handle_key_press(self, key):
         print(f"Pressed key: {key}")
@@ -38,15 +45,29 @@ class InputController:
         elif key == Qt.Key.Key_Y:
             print("Redo (Y) pressed")
             self.command_manager.redo()
+        elif key in (Qt.Key.Key_Minus, Qt.Key.Key_Equal):
+            delta = -10 if key == Qt.Key.Key_Minus else 10
+            resize_command = ResizeCommand(delta, self.canvas.width(), self.canvas.height())
+            self.command_manager.execute_command(resize_command,self.model.get_selected())
+
         elif key in (Qt.Key.Key_Left, Qt.Key.Key_Right, Qt.Key.Key_Up, Qt.Key.Key_Down):
             print("Arrow key pressed")
-            #todo Здесь можно добавить логику перемещения выбранного объекта, в том числе проверить валидность через визитора
+            if key == Qt.Key.Key_Left:
+                move_command = MoveCommand(-5, 0, self.canvas.width(), self.canvas.height())
+                self.command_manager.execute_command(move_command,self.model.get_selected())
 
+            elif key == Qt.Key.Key_Right:
+                move_command = MoveCommand(5, 0, self.canvas.width(), self.canvas.height())
+                self.command_manager.execute_command(move_command, self.model.get_selected())
 
-        # todo +/- для изменения размера, где тоже нужно будеть проверять валидность
-        # todo слайдер для регулировки размера
-        #todo цвет нужно выбирать не кнопкой, а просто какую-то штуку сделать, которая будет текущего цвета, при нажатии на нее выделяется
-        #todo выбор стратегии выбора
+            elif key == Qt.Key.Key_Down:
+                move_command = MoveCommand(0, 5, self.canvas.width(), self.canvas.height())
+                self.command_manager.execute_command(move_command, self.model.get_selected())
+
+            elif key == Qt.Key.Key_Up:
+                move_command = MoveCommand(0, -5, self.canvas.width(), self.canvas.height())
+                self.command_manager.execute_command(move_command, self.model.get_selected())
+
         self.canvas.update()
 
     def handle_canvas_click(self, pos, modifiers, button):
@@ -68,12 +89,22 @@ class InputController:
             else:
                 # Если ничего не выделили – создаем новую фигуру.
 
-                #todo нужно поставить ограничения тогда на размер окна, и обработать вдруг выходим за границу окна, отдельный визитор по идее
                 figure = self.factory.create_object(
-                    self.current_object_type, click_pos, None, self.current_size, self.current_color
+                    self.current_object_type, click_pos, None,  self.canvas.width(), self.canvas.height(), self.current_size, self.current_color
                 )
 
                 add_command = AddCommand(self.model)
                 self.command_manager.execute_command(add_command, [figure])
 
+
             self.canvas.update()
+
+    def change_strategy(self, index: int):
+        self.model.set_select_policy(self.strategies[index])
+
+    def change_color(self, color):
+        color_command = ChangeColorCommand((color.red(), color.green(), color.blue()))
+        self.command_manager.execute_command(color_command, self.model.get_selected())
+
+    def change_object_type(self, index: int):
+        self.current_object_type = self.shapes[index]
