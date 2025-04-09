@@ -28,7 +28,8 @@ class Application:
             "Выбрать всех": AllSelectStrategy()
         }
 
-        shapes = ["circle", "rectangle", "ellipse", "square", "triangle"]
+        shapes = ["circle", "rectangle"]
+        # , "ellipse", "square", "triangle"
 
         self.model = Model(strategies_dict["Выбрать верхнего"])
         self.view = Window(title, self.model, hotkeys, shapes, list(strategies_dict.keys()))
@@ -47,7 +48,7 @@ class Application:
         self.view.keyPressed.connect(self.input_controller.handle_key_press)
         self.view.canvas.mouse_clicked.connect(self.input_controller.handle_canvas_click)
         self.view.ui.strategy_combo_box.currentIndexChanged.connect(self.input_controller.change_strategy)
-        self.view.ui.shape_combo_box.currentIndexChanged.connect(self.input_controller.change_strategy)
+        self.view.ui.shape_combo_box.currentIndexChanged.connect(self.input_controller.change_object_type)
         self.view.ui.color_button.colorChanged.connect(self.input_controller.change_color)
 
     def run(self):

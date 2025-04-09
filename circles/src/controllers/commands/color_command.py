@@ -35,4 +35,4 @@ class ChangeColorCommand(Command):
                 obj.accept(visitor)
 
     def clone(self) -> Command:
-        return ColorCommand(self.new_color)
+        return ChangeColorCommand(self.new_color)

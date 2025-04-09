@@ -1,8 +1,12 @@
-from PyQt6.QtGui import QColor, QPen, QBrush
-from PyQt6.QtCore import Qt, QRectF
+from PyQt6.QtGui import QColor, QPen, QBrush, QPolygonF
+from PyQt6.QtCore import Qt, QRectF, QPointF
 
 from src.domain.objects.circle import Circle
+from src.domain.objects.ellipse import Ellipse
+from src.domain.objects.square import Square
+from src.domain.objects.triangle import Triangle
 from src.domain.visitor import Visitor
+from src.model.scenarios.geometry import Rectangle
 
 
 class DrawingVisitor(Visitor):
@@ -47,3 +51,33 @@ class DrawingVisitor(Visitor):
                           radius * 2,
                           radius * 2)
             self.draw_selection_rect(rect)
+
+    def visit_rectangle(self, rectangle: Rectangle):
+        top_left = rectangle.top_left
+        width = rectangle.width
+        height = rectangle.height
+
+        self.set_color(rectangle.get_color())
+        self.painter.drawRect(top_left.x, top_left.y, width, height)
+
+        if rectangle.selected:
+            rect = QRectF(top_left.x, top_left.y, width, height)
+            self.draw_selection_rect(rect)
+
+    # def visit_triangle(self, triangle: Triangle):
+    #     p1, p2, p3 = triangle.get_points()
+    #     self.set_color(triangle.get_color())
+    #
+    #     # Создаем полигон из трех вершин для отрисовки треугольника.
+    #     polygon = QPolygonF([
+    #         QPointF(p1.x, p1.y),
+    #         QPointF(p2.x, p2.y),
+    #         QPointF(p3.x, p3.y)
+    #     ])
+    #     self.painter.drawPolygon(polygon)
+    #
+    #     if triangle.selected:
+    #         # Получаем ограничивающий прямоугольник для треугольника.
+    #         left, right, top, bottom = triangle.get_bounding_box()
+    #         rect = QRectF(left, top, right - left, bottom - top)
+    #         self.draw_selection_rect(rect)
