@@ -11,9 +11,6 @@ from src.model.scenarios.strategies.back_select_strategy import BackSelectStrate
 from src.model.scenarios.strategies.front_select_strategy import FrontSelectStrategy
 from src.view.window import Window
 
-
-
-
 class Application:
     def __init__(self, argv, title: str):
         self.app = QApplication(argv)
@@ -28,8 +25,7 @@ class Application:
             "Выбрать всех": AllSelectStrategy()
         }
 
-        shapes = ["circle", "rectangle"]
-        # , "ellipse", "square", "triangle"
+        shapes = ["circle", "rectangle", "triangle", "ellipse", "square"]
 
         self.model = Model(strategies_dict["Выбрать верхнего"])
         self.view = Window(title, self.model, hotkeys, shapes, list(strategies_dict.keys()))

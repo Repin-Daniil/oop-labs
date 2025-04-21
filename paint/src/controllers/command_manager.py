@@ -6,8 +6,6 @@ class CommandManager:
         self.undo_stack = []  # выполненные команды для undo
         self.redo_stack = []  # отменённые команды для redo
 
-    # todo как оповещать канвас об изменениях, наблюдатель?
-
     def execute_command(self, command:Command, target):
         command.execute(target)
         self.undo_stack.append(command)

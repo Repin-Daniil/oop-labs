@@ -28,7 +28,6 @@ class ResizeCommand(Command):
     def undo(self):
         if not self.rollback:
             self.rollback = True
-
             visitor = ResizeVisitor(-self.step, self.canvas_width, self.canvas_height)
 
             for obj in self.target:

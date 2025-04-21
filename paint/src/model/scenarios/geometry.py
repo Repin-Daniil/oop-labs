@@ -28,6 +28,10 @@ class Coord:
         """Умножение на скаляр (оператор *)"""
         return Coord(int(self.x * scalar), int(self.y * scalar))
 
+    def __neg__(self) -> 'Coord':
+        """Унарный минус (оператор -)"""
+        return Coord(-self.x, -self.y)
+
     def __eq__(self, other: object) -> bool:
         """Проверка на равенство (оператор ==)"""
         if not isinstance(other, Coord):

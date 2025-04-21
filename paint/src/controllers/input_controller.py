@@ -18,43 +18,40 @@ class InputController:
     Класс, отвечающий за обработку событий (нажатий клавиш, кликов мыши) и
     выполнение соответствующих команд через CommandManager.
     """
-    def __init__(self, model: Model, factory: ObjectFactory, command_manager: CommandManager, canvas, shapes, strategies):
+
+    def __init__(self, model: Model, factory: ObjectFactory, command_manager: CommandManager, canvas, shapes,
+                 strategies):
         self.model = model
         self.factory = factory
         self.shapes = shapes
         self.command_manager = command_manager
         self.canvas = canvas
-        # todo регулирование через UI
+
         self.current_size = 50
         self.current_color = (0, 0, 0)
         self.current_object_type = "circle"
         self.strategies = strategies
 
-
     def handle_key_press(self, key):
-        print(f"Pressed key: {key}")
         if key == Qt.Key.Key_Backspace:
             selected = self.model.get_selected()
             if selected:
                 # Удаляем выделенные объекты
-                delete_command = DeleteCommand( self.model)
-                self.command_manager.execute_command(delete_command,selected)
+                delete_command = DeleteCommand(self.model)
+                self.command_manager.execute_command(delete_command, selected)
         elif key == Qt.Key.Key_Z:
-            print("Undo (Z) pressed")
             self.command_manager.undo()
         elif key == Qt.Key.Key_Y:
-            print("Redo (Y) pressed")
             self.command_manager.redo()
         elif key in (Qt.Key.Key_Minus, Qt.Key.Key_Equal):
             delta = -10 if key == Qt.Key.Key_Minus else 10
             resize_command = ResizeCommand(delta, self.canvas.width(), self.canvas.height())
-            self.command_manager.execute_command(resize_command,self.model.get_selected())
+            self.command_manager.execute_command(resize_command, self.model.get_selected())
 
         elif key in (Qt.Key.Key_Left, Qt.Key.Key_Right, Qt.Key.Key_Up, Qt.Key.Key_Down):
-            print("Arrow key pressed")
             if key == Qt.Key.Key_Left:
                 move_command = MoveCommand(-5, 0, self.canvas.width(), self.canvas.height())
-                self.command_manager.execute_command(move_command,self.model.get_selected())
+                self.command_manager.execute_command(move_command, self.model.get_selected())
 
             elif key == Qt.Key.Key_Right:
                 move_command = MoveCommand(5, 0, self.canvas.width(), self.canvas.height())
@@ -74,28 +71,29 @@ class InputController:
         if button == Qt.MouseButton.LeftButton:
             click_pos = Coord(int(pos.x()), int(pos.y()))
 
-            if not (modifiers & Qt.KeyboardModifier.ControlModifier):
-                # Снимаем выделение с текущих объектов,
-                # предполагаем, что SelectCommand без аргументов умеет снимать выделение
-                deselection_command = SelectCommand()
-                self.command_manager.execute_command(deselection_command, self.model.get_selected())
-
             selected = self.model.select(click_pos)
 
+            if not (modifiers & Qt.KeyboardModifier.ControlModifier):
+
+
+                if selected != self.model.get_selected():
+                    deselection_command = SelectCommand()
+                    self.command_manager.execute_command(deselection_command, self.model.get_selected())
+
+
+
             if selected:
-                # Выделяем найденные объекты
                 selection_command = SelectCommand()
                 self.command_manager.execute_command(selection_command, selected)
             else:
-                # Если ничего не выделили – создаем новую фигуру.
+                if not (modifiers & Qt.KeyboardModifier.ControlModifier):
+                    figure = self.factory.create_object(
+                        self.current_object_type, click_pos, None, self.canvas.width(), self.canvas.height(),
+                        self.current_size, self.current_color
+                    )
 
-                figure = self.factory.create_object(
-                    self.current_object_type, click_pos, None,  self.canvas.width(), self.canvas.height(), self.current_size, self.current_color
-                )
-
-                add_command = AddCommand(self.model)
-                self.command_manager.execute_command(add_command, [figure])
-
+                    add_command = AddCommand(self.model)
+                    self.command_manager.execute_command(add_command, [figure])
 
             self.canvas.update()
 
@@ -103,6 +101,7 @@ class InputController:
         self.model.set_select_policy(self.strategies[index])
 
     def change_color(self, color):
+        self.current_color = (color.red(), color.green(), color.blue())
         color_command = ChangeColorCommand((color.red(), color.green(), color.blue()))
         self.command_manager.execute_command(color_command, self.model.get_selected())
 

@@ -64,20 +64,43 @@ class DrawingVisitor(Visitor):
             rect = QRectF(top_left.x, top_left.y, width, height)
             self.draw_selection_rect(rect)
 
-    # def visit_triangle(self, triangle: Triangle):
-    #     p1, p2, p3 = triangle.get_points()
-    #     self.set_color(triangle.get_color())
-    #
-    #     # Создаем полигон из трех вершин для отрисовки треугольника.
-    #     polygon = QPolygonF([
-    #         QPointF(p1.x, p1.y),
-    #         QPointF(p2.x, p2.y),
-    #         QPointF(p3.x, p3.y)
-    #     ])
-    #     self.painter.drawPolygon(polygon)
-    #
-    #     if triangle.selected:
-    #         # Получаем ограничивающий прямоугольник для треугольника.
-    #         left, right, top, bottom = triangle.get_bounding_box()
-    #         rect = QRectF(left, top, right - left, bottom - top)
-    #         self.draw_selection_rect(rect)
+    def visit_triangle(self, triangle: Triangle):
+        p1, p2, p3 = triangle.get_points()
+        self.set_color(triangle.get_color())
+
+        # Создаем полигон из трех вершин для отрисовки треугольника.
+        polygon = QPolygonF([
+            QPointF(p1.x, p1.y),
+            QPointF(p2.x, p2.y),
+            QPointF(p3.x, p3.y)
+        ])
+        self.painter.drawPolygon(polygon)
+
+        if triangle.selected:
+            # Получаем ограничивающий прямоугольник для треугольника.
+            left, right, top, bottom = triangle.get_bounding_box()
+            rect = QRectF(left, top, right - left, bottom - top)
+            self.draw_selection_rect(rect)
+
+    def visit_square(self, square: Square):
+        top_left = square.top_left
+        size = square.side_length
+
+        self.set_color(square.get_color())
+        self.painter.drawRect(top_left.x, top_left.y, size, size)
+
+        if square.selected:
+            rect = QRectF(top_left.x, top_left.y, size, size)
+            self.draw_selection_rect(rect)
+
+    def visit_ellipse(self, ellipse: Ellipse):
+        center = ellipse.center
+        rx = ellipse.radius_x
+        ry = ellipse.radius_y
+
+        self.set_color(ellipse.get_color())
+        self.painter.drawEllipse(center.x - rx, center.y - ry, rx * 2, ry * 2)
+
+        if ellipse.selected:
+            rect = QRectF(center.x - rx, center.y - ry, rx * 2, ry * 2)
+            self.draw_selection_rect(rect)

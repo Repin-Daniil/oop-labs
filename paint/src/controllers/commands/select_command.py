@@ -13,6 +13,7 @@ class SelectCommand(Command):
 
     def execute(self, objects: List[ModelObject]):
         visitor =  SelectVisitor()
+
         self.target = objects
 
         for obj in objects:

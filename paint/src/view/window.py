@@ -22,7 +22,6 @@ class Window(QMainWindow):
         self.canvas = CanvasWidget(model, self)
 
         self.ui.attach_canvas(self.canvas)
-        # todo Добавление нужных полей в комбо боксы
 
 
 
